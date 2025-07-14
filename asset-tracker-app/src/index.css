@@ -1,13 +1,21 @@
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f0f2f5;
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  min-height: 100vh;
+  color: #222;
+  transition: background 0.3s;
 }
 
 .container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 32px 16px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.08);
+  margin-bottom: 32px;
+  transition: box-shadow 0.2s;
 }

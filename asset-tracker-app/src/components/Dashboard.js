@@ -17,7 +17,7 @@ function Dashboard({ networth, assets, expenses }) {
       </div>
       <div className="row mt-4">
         <div className="col-md-8 offset-md-2">
-          <Assets assets={assets} />
+          <Assets assets={assets} onEditAsset={() => {}} onDeleteAsset={() => {}} />
         </div>
       </div>
     </div>
