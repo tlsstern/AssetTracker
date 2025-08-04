@@ -159,16 +159,16 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     placeholder="Search Symbol"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ borderRadius: 8, border: '1px solid #e0e7ff', marginBottom: searchResults.length > 0 ? 60 : 0 }}
+                    style={{ borderRadius: 8, border: '1px solid #e0e7ff', marginBottom: 0 }}
                   />
                   {searchResults.length > 0 && (
-                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '90%', top: '110%' }}>
+                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', maxHeight: 220, overflowY: 'auto', boxShadow: '0 4px 16px rgba(99,102,241,0.12)', border: '1px solid #e0e7ff', background: '#fff', marginBottom: 0 }}>
                       {searchResults.map((match, idx) => (
                         <li
                           key={match.symbol + idx}
                           className="list-group-item list-group-item-action"
                           onClick={() => handleSymbolSelect(match.symbol, match.description || match.displaySymbol || match.symbol)}
-                          style={{ cursor: 'pointer', borderRadius: 8, marginBottom: 4 }}
+                          style={{ cursor: 'pointer', borderRadius: 8, marginBottom: 4, background: '#fff' }}
                         >
                           <span role="img" aria-label="search" style={{ fontSize: 16, marginRight: 6 }}>🔍</span>
                           {match.symbol} - {match.description || match.displaySymbol || match.symbol} {match.type ? `(${match.type})` : ''}
@@ -177,7 +177,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     </ul>
                   )}
                   {searchQuery.length > 1 && searchResults.length === 0 && (
-                    <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '90%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: '1px solid #e0e7ff' }}>
+                    <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: '1px solid #e0e7ff', marginBottom: 0 }}>
                       No results found.
                     </div>
                   )}

@@ -65,7 +65,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         style={{ width: 90, borderRadius: 8, border: '1px solid #e0e7ff', marginRight: 8 }}
                         min={0}
                       />
-                      <span style={{ fontWeight: 600, marginRight: 8 }}>CHF {(editData.value * editData.quantity).toFixed(2)}</span>
+                      <span style={{ fontWeight: 600, marginRight: 8 }}>CHF {editData.value}</span>
                       <button className="btn btn-success btn-sm" style={{ borderRadius: 8, fontWeight: 600 }} onClick={() => saveEdit(index)}>
                         Save
                       </button>
@@ -83,7 +83,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span className="badge bg-primary rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: 'linear-gradient(90deg, #6366f1 0%, #60a5fa 100%)', color: '#fff', fontWeight: 600 }}>
-                        CHF { (asset.value * (asset.quantity || 1)).toFixed(2) }
+                        CHF { asset.value.toFixed(2) }
                       </span>
                       <button className="btn btn-outline-primary btn-sm" style={{ borderRadius: 8, fontWeight: 600 }} onClick={() => startEdit(index, asset)}>
                         Edit
