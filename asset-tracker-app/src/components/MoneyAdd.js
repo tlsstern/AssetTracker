@@ -95,7 +95,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
     borderRadius: 8,
     padding: '8px 20px',
     fontWeight: 600,
-    background: '#415E72',
+    background: '#687FE5',
     color: '#F3E2D4',
     border: 'none',
   };

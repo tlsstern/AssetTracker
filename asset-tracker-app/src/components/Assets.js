@@ -29,7 +29,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
   const buttonStyle = {
     borderRadius: 8,
     fontWeight: 600,
-    background: '#415E72',
+    background: '#687FE5',
     color: '#F3E2D4',
     border: 'none',
   };
@@ -38,8 +38,8 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
     borderRadius: 8,
     fontWeight: 600,
     background: 'transparent',
-    color: '#415E72',
-    border: '1px solid #415E72',
+    color: '#687FE5',
+    border: '1px solid #687FE5',
   };
 
   return (
@@ -100,7 +100,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                       {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: '1px solid #C5B0CD' }}>(x{asset.quantity})</span>}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#415E72', color: '#F3E2D4', fontWeight: 600 }}>
+                      <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
                         CHF { asset.value.toFixed(2) }
                       </span>
                       <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, asset)}>

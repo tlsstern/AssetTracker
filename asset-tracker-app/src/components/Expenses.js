@@ -47,7 +47,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
   const buttonStyle = {
     borderRadius: 8,
     fontWeight: 600,
-    background: '#415E72',
+    background: '#687FE5',
     color: '#F3E2D4',
     border: 'none',
   };
@@ -56,8 +56,8 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
     borderRadius: 8,
     fontWeight: 600,
     background: 'transparent',
-    color: '#415E72',
-    border: '1px solid #415E72',
+    color: '#687FE5',
+    border: '1px solid #687FE5',
   };
 
 
@@ -156,7 +156,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                         </div>
                       </div>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#415E72', color: '#F3E2D4', fontWeight: 600 }}>
+                        <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
                           CHF {expense.value.toFixed(2)}
                         </span>
                         <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, expense)}>Edit</button>

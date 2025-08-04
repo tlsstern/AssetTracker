@@ -6,7 +6,7 @@
 }
 
 .App-header {
-  background: #17313E; /* Darkest shade for the header */
+  background: #687FE5; /* New accent color for the header */
   padding: 32px 0 24px 0;
   border-bottom: none;
   border-radius: 0 0 24px 24px;
@@ -38,13 +38,13 @@
   padding: 8px 20px;
   border-radius: 8px;
   text-decoration: none;
-  color: #415E72; /* Dark accent for links */
+  color: #687FE5; /* New accent for links */
   font-weight: 600;
   font-size: 1.1rem;
   transition: background 0.2s, color 0.2s;
 }
 
 .Navbar a:hover, .Navbar a.active {
-  background: #415E72; /* Dark accent for active/hover links */
+  background: #687FE5; /* New accent for active/hover links */
   color: #F3E2D4;
 }
