@@ -38,7 +38,18 @@ function App() {
   }, [assets, expenses]);
 
   const addAsset = (asset) => {
-    setAssets([...assets, asset]);
+    setAssets(prevAssets => {
+      const existingAssetIndex = prevAssets.findIndex(a => a.name === asset.name);
+      if (existingAssetIndex > -1) {
+        const updatedAssets = [...prevAssets];
+        const existingAsset = updatedAssets[existingAssetIndex];
+        existingAsset.quantity += asset.quantity;
+        existingAsset.value += asset.value;
+        return updatedAssets;
+      } else {
+        return [...prevAssets, asset];
+      }
+    });
   };
 
   const addExpense = (expense) => {
