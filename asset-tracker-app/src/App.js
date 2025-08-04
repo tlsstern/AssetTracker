@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
@@ -30,7 +29,8 @@ function App() {
 
   useEffect(() => {
     const calculateNetworth = () => {
-      const totalAssets = assets.reduce((sum, asset) => sum + (asset.value * (asset.quantity || 1)), 0);
+      // FIX: The total value of assets is now calculated by summing up asset.value directly.
+      const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
       const totalExpenses = expenses.reduce((sum, expense) => sum + expense.value, 0);
       setNetworth(totalAssets - totalExpenses);
     };
@@ -64,6 +64,17 @@ function App() {
     setAssets(assets => assets.filter((_, i) => i !== index));
   };
 
+  // ADD: Function to edit an expense
+  const editExpense = (index, updatedExpense) => {
+    setExpenses(expenses => expenses.map((expense, i) => (i === index ? updatedExpense : expense)));
+  };
+
+  // ADD: Function to delete an expense
+  const deleteExpense = (index) => {
+    setExpenses(expenses => expenses.filter((_, i) => i !== index));
+  };
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -73,7 +84,8 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<Dashboard networth={networth} assets={assets} expenses={expenses} />} />
-          <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} />} />
+          {/* UPDATE: Pass edit and delete handlers to Expenses component */}
+          <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense}/>} />
           <Route path="/overview" element={<DataOverview expenses={expenses} />} />
           <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
         </Routes>
@@ -83,4 +95,3 @@ function App() {
 }
 
 export default App;
-
