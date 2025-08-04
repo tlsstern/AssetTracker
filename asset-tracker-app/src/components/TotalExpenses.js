@@ -10,7 +10,7 @@ const TotalExpenses = ({ expenses }) => {
         Total Expenses
       </div>
       <div className="card-body">
-        <h2 className="card-title" style={{ fontSize: 36, fontWeight: 700, background: 'linear-gradient(90deg, #f87171 0%, #fbbf24 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: 0 }}>
+        <h2 className="card-title" style={{ fontSize: 36, fontWeight: 500, color: '#212529', marginBottom: 0 }}>
           CHF {totalExpenses.toFixed(2)}
         </h2>
       </div>
