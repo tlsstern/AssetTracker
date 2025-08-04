@@ -25,6 +25,22 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
     });
     setEditIndex(null);
   };
+  
+  const buttonStyle = {
+    borderRadius: 8,
+    fontWeight: 600,
+    background: '#415E72',
+    color: '#F3E2D4',
+    border: 'none',
+  };
+
+  const outlineButtonStyle = {
+    borderRadius: 8,
+    fontWeight: 600,
+    background: 'transparent',
+    color: '#415E72',
+    border: '1px solid #415E72',
+  };
 
   return (
     <div className="card">
@@ -38,21 +54,23 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
               <li key={index} className="list-group-item d-flex justify-content-between align-items-center" style={{ border: 'none', background: 'transparent', padding: '14px 0' }}>
                 {editIndex === index ? (
                   <>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
                       <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
                       <input
                         type="text"
                         name="name"
                         value={editData.name}
                         onChange={handleEditChange}
-                        style={{ width: 120, borderRadius: 8, border: '1px solid #e0e7ff', marginRight: 8 }}
+                        className="form-control form-control-sm"
+                        style={{ width: 120, borderRadius: 8, border: '1px solid #C5B0CD', marginRight: 8 }}
                       />
                       <input
                         type="number"
                         name="quantity"
                         value={editData.quantity}
                         onChange={handleEditChange}
-                        style={{ width: 60, borderRadius: 8, border: '1px solid #e0e7ff', marginRight: 8 }}
+                        className="form-control form-control-sm"
+                        style={{ width: 60, borderRadius: 8, border: '1px solid #C5B0CD', marginRight: 8 }}
                         min={1}
                       />
                     </span>
@@ -62,14 +80,14 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         name="value"
                         value={editData.value}
                         onChange={handleEditChange}
-                        style={{ width: 90, borderRadius: 8, border: '1px solid #e0e7ff', marginRight: 8 }}
+                        className="form-control form-control-sm"
+                        style={{ width: 90, borderRadius: 8, border: '1px solid #C5B0CD', marginRight: 8 }}
                         min={0}
                       />
-                      <span style={{ fontWeight: 600, marginRight: 8 }}>CHF {editData.value}</span>
-                      <button className="btn btn-success btn-sm" style={{ borderRadius: 8, fontWeight: 600 }} onClick={() => saveEdit(index)}>
+                      <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>
                         Save
                       </button>
-                      <button className="btn btn-secondary btn-sm" style={{ borderRadius: 8, fontWeight: 600 }} onClick={() => setEditIndex(null)}>
+                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>
                         Cancel
                       </button>
                     </span>
@@ -79,16 +97,16 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
                       <span style={{ fontWeight: 500 }}>{asset.name}</span>
-                      {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: '1px solid #e0e7ff' }}>(x{asset.quantity})</span>}
+                      {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: '1px solid #C5B0CD' }}>(x{asset.quantity})</span>}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="badge bg-primary rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: 'linear-gradient(90deg, #6366f1 0%, #60a5fa 100%)', color: '#fff', fontWeight: 600 }}>
+                      <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#415E72', color: '#F3E2D4', fontWeight: 600 }}>
                         CHF { asset.value.toFixed(2) }
                       </span>
-                      <button className="btn btn-outline-primary btn-sm" style={{ borderRadius: 8, fontWeight: 600 }} onClick={() => startEdit(index, asset)}>
+                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, asset)}>
                         Edit
                       </button>
-                      <button className="btn btn-outline-danger btn-sm" style={{ borderRadius: 8, fontWeight: 600 }} onClick={() => onDeleteAsset(index)}>
+                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteAsset(index)}>
                         Delete
                       </button>
                     </span>

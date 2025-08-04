@@ -3,7 +3,7 @@ import './Card.css';
 import PriceFetcher from './PriceFetcher';
 import Assets from './Assets';
 
-const FINNHUB_API_KEY = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
+const FINNHUB_API_KEY = 'c1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
 
 const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
   const [name, setName] = useState('');
@@ -91,6 +91,15 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
     setSearchQuery(selectedSymbol); // Keep the selected symbol in the search input
   };
 
+  const buttonStyle = {
+    borderRadius: 8,
+    padding: '8px 20px',
+    fontWeight: 600,
+    background: '#415E72',
+    color: '#F3E2D4',
+    border: 'none',
+  };
+
   return (
     <div>
       <div className="card">
@@ -108,7 +117,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                   placeholder="Asset Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{ borderRadius: 8, border: '1px solid #e0e7ff' }}
+                  style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
                 />
               </div>
               <div className="col">
@@ -149,7 +158,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     min="1"
-                    style={{ borderRadius: 8, border: '1px solid #e0e7ff' }}
+                    style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
                   />
                 </div>
                 <div className="col position-relative">
@@ -159,10 +168,10 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     placeholder="Search Symbol"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ borderRadius: 8, border: '1px solid #e0e7ff', marginBottom: 0 }}
+                    style={{ borderRadius: 8, border: '1px solid #C5B0CD', marginBottom: 0 }}
                   />
                   {searchResults.length > 0 && (
-                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', maxHeight: 220, overflowY: 'auto', boxShadow: '0 4px 16px rgba(99,102,241,0.12)', border: '1px solid #e0e7ff', background: '#fff', marginBottom: 0 }}>
+                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', maxHeight: 220, overflowY: 'auto', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', border: '1px solid #C5B0CD', background: '#fff', marginBottom: 0 }}>
                       {searchResults.map((match, idx) => (
                         <li
                           key={match.symbol + idx}
@@ -177,7 +186,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     </ul>
                   )}
                   {searchQuery.length > 1 && searchResults.length === 0 && (
-                    <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: '1px solid #e0e7ff', marginBottom: 0 }}>
+                    <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: '1px solid #C5B0CD', marginBottom: 0 }}>
                       No results found.
                     </div>
                   )}
@@ -192,7 +201,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     placeholder="Value"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    style={{ borderRadius: 8, border: '1px solid #e0e7ff' }}
+                    style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
                   />
                 </div>
               </div>
@@ -200,13 +209,13 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
 
             <div className="row g-3 mb-3">
               <div className="col">
-                <select className="form-control" value={assetType} onChange={(e) => setAssetType(e.target.value)} style={{ borderRadius: 8, border: '1px solid #e0e7ff' }}>
+                <select className="form-control" value={assetType} onChange={(e) => setAssetType(e.target.value)} style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}>
                   <option value="stock">Stock</option>
                   <option value="crypto">Cryptocurrency</option>
                 </select>
               </div>
               <div className="col-auto">
-                <button type="submit" className="btn btn-primary" style={{ borderRadius: 8, padding: '8px 20px', fontWeight: 600, background: 'linear-gradient(90deg, #6366f1 0%, #60a5fa 100%)', border: 'none' }}>Add Asset</button>
+                <button type="submit" className="btn" style={buttonStyle}>Add Asset</button>
               </div>
             </div>
           </form>

@@ -1,22 +1,22 @@
 .App {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+  background: #F3E2D4; /* Lightest shade for the main background */
   text-align: center;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
 .App-header {
-  background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+  background: #17313E; /* Darkest shade for the header */
   padding: 32px 0 24px 0;
   border-bottom: none;
   border-radius: 0 0 24px 24px;
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   margin-bottom: 24px;
 }
 
 .App-title {
   font-size: 2.5rem;
-  color: #fff;
+  color: #F3E2D4; /* Lightest shade for text on dark header */
   font-weight: 700;
   letter-spacing: 1px;
   margin: 0;
@@ -28,7 +28,7 @@
   background: #fff;
   padding: 16px 0;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   margin: 0 auto 32px auto;
   max-width: 900px;
   gap: 24px;
@@ -38,13 +38,13 @@
   padding: 8px 20px;
   border-radius: 8px;
   text-decoration: none;
-  color: #6366f1;
+  color: #415E72; /* Dark accent for links */
   font-weight: 600;
   font-size: 1.1rem;
   transition: background 0.2s, color 0.2s;
 }
 
 .Navbar a:hover, .Navbar a.active {
-  background: #6366f1;
-  color: #fff;
+  background: #415E72; /* Dark accent for active/hover links */
+  color: #F3E2D4;
 }
