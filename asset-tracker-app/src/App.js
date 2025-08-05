@@ -142,7 +142,6 @@ function App() {
                   <Route path="/overview" element={<DataOverview expenses={expenses} />} />
                   <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
                   <Route path="/settings" element={<Settings />} />
-                  <Route path="/update-password" element={<UpdatePassword />} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </div>
@@ -154,6 +153,7 @@ function App() {
       />
       <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
       <Route path="/verify" element={!session ? <Verify /> : <Navigate to="/" />} />
+      <Route path="/update-password" element={<UpdatePassword />} />
     </Routes>
   );
 }
