@@ -1,50 +1,35 @@
-.App {
-  min-height: 100vh;
-  background: #F3E2D4; /* Lightest shade for the main background */
-  text-align: center;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-}
-
 .App-header {
-  background: #687FE5; /* New accent color for the header */
-  padding: 32px 0 24px 0;
-  border-bottom: none;
+  background: #687FE5;
+  padding: 32px 24px;
   border-radius: 0 0 24px 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; /* This is required for positioning the icon */
 }
 
 .App-title {
   font-size: 2.5rem;
-  color: #F3E2D4; /* Lightest shade for text on dark header */
+  color: #F3E2D4;
   font-weight: 700;
   letter-spacing: 1px;
   margin: 0;
 }
 
-.Navbar {
-  display: flex;
-  justify-content: center;
-  background: #fff;
-  padding: 16px 0;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  margin: 0 auto 32px auto;
-  max-width: 900px;
-  gap: 24px;
-}
-
-.Navbar a {
-  padding: 8px 20px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #687FE5; /* New accent for links */
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: background 0.2s, color 0.2s;
-}
-
-.Navbar a:hover, .Navbar a.active {
-  background: #687FE5; /* New accent for active/hover links */
+/* These styles position the settings icon */
+.settings-link {
+  position: absolute;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
   color: #F3E2D4;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.settings-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }

@@ -1,0 +1,35 @@
+.Navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 8px 24px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin: 0 auto 32px auto;
+  max-width: 900px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+}
+
+.Navbar a {
+  padding: 8px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #687FE5;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.Navbar a:hover, .Navbar a.active {
+  background: #687FE5;
+  color: #F3E2D4;
+}
+
+.nav-settings {
+  position: relative;
+}
