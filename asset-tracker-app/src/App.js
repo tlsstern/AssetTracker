@@ -6,30 +6,38 @@ import Dashboard from './components/Dashboard';
 import Expenses from './components/Expenses';
 import DataOverview from './components/DataOverview';
 import MoneyAdd from './components/MoneyAdd';
-import Assets from './components/Assets';
+import Login from './components/Login'; // Import the new Login component
+import { supabase } from './supabaseClient';
 
 function App() {
-  const [assets, setAssets] = useState(() => {
-    const savedAssets = localStorage.getItem('assets');
-    return savedAssets ? JSON.parse(savedAssets) : [];
-  });
-  const [expenses, setExpenses] = useState(() => {
-    const savedExpenses = localStorage.getItem('expenses');
-    return savedExpenses ? JSON.parse(savedExpenses) : [];
-  });
+  const [session, setSession] = useState(null);
+  const [assets, setAssets] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [networth, setNetworth] = useState(0);
 
   useEffect(() => {
-    localStorage.setItem('assets', JSON.stringify(assets));
-  }, [assets]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-  }, [expenses]);
-
+    if (session) {
+      getAssets();
+      getExpenses();
+    }
+  }, [session]);
+  
   useEffect(() => {
     const calculateNetworth = () => {
-      // FIX: The total value of assets is now calculated by summing up asset.value directly.
       const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
       const totalExpenses = expenses.reduce((sum, expense) => sum + expense.value, 0);
       setNetworth(totalAssets - totalExpenses);
@@ -37,43 +45,71 @@ function App() {
     calculateNetworth();
   }, [assets, expenses]);
 
-  const addAsset = (asset) => {
-    setAssets(prevAssets => {
-      const existingAssetIndex = prevAssets.findIndex(a => a.name === asset.name);
-      if (existingAssetIndex > -1) {
-        const updatedAssets = [...prevAssets];
-        const existingAsset = updatedAssets[existingAssetIndex];
-        existingAsset.quantity += asset.quantity;
-        existingAsset.value += asset.value;
-        return updatedAssets;
-      } else {
-        return [...prevAssets, asset];
-      }
-    });
+  const getAssets = async () => {
+    const { data } = await supabase.from('assets').select('*');
+    setAssets(data || []);
   };
 
-  const addExpense = (expense) => {
-    setExpenses([...expenses, expense]);
+  const getExpenses = async () => {
+    const { data } = await supabase.from('expenses').select('*');
+    setExpenses(data || []);
   };
 
-  const editAsset = (index, updatedAsset) => {
-    setAssets(assets => assets.map((a, i) => i === index ? updatedAsset : a));
+  const addAsset = async (asset) => {
+    const { data, error } = await supabase
+      .from('assets')
+      .insert([{ ...asset, user_id: session.user.id }])
+      .select();
+    if (error) console.error('Error adding asset:', error);
+    else setAssets(prev => [...prev, ...data]);
   };
 
-  const deleteAsset = (index) => {
-    setAssets(assets => assets.filter((_, i) => i !== index));
+  const addExpense = async (expense) => {
+    const { data, error } = await supabase
+      .from('expenses')
+      .insert([{ ...expense, user_id: session.user.id }])
+      .select();
+    if (error) console.error('Error adding expense:', error);
+    else setExpenses(prev => [...prev, ...data]);
   };
 
-  // ADD: Function to edit an expense
-  const editExpense = (index, updatedExpense) => {
-    setExpenses(expenses => expenses.map((expense, i) => (i === index ? updatedExpense : expense)));
+  const editAsset = async (index, updatedAsset) => {
+    const assetToUpdate = assets[index];
+    const { data, error } = await supabase
+      .from('assets')
+      .update(updatedAsset)
+      .eq('id', assetToUpdate.id);
+    if (error) console.error('Error updating asset:', error);
+    else getAssets(); // Refresh assets
   };
 
-  // ADD: Function to delete an expense
-  const deleteExpense = (index) => {
-    setExpenses(expenses => expenses.filter((_, i) => i !== index));
+  const deleteAsset = async (index) => {
+    const assetToDelete = assets[index];
+    const { error } = await supabase.from('assets').delete().eq('id', assetToDelete.id);
+    if (error) console.error('Error deleting asset:', error);
+    else setAssets(assets.filter((_, i) => i !== index));
   };
 
+  const editExpense = async (index, updatedExpense) => {
+    const expenseToUpdate = expenses[index];
+    const { data, error } = await supabase
+      .from('expenses')
+      .update(updatedExpense)
+      .eq('id', expenseToUpdate.id);
+    if (error) console.error('Error updating expense:', error);
+    else getExpenses(); // Refresh expenses
+  };
+
+  const deleteExpense = async (index) => {
+    const expenseToDelete = expenses[index];
+    const { error } = await supabase.from('expenses').delete().eq('id', expenseToDelete.id);
+    if (error) console.error('Error deleting expense:', error);
+    else setExpenses(expenses.filter((_, i) => i !== index));
+  };
+
+  if (!session) {
+    return <Login />; // Use the new Login component
+  }
 
   return (
     <div className="App">
@@ -83,8 +119,7 @@ function App() {
       <Navbar />
       <div className="container">
         <Routes>
-          <Route path="/" element={<Dashboard networth={networth} assets={assets} expenses={expenses} />} />
-          {/* UPDATE: Pass edit and delete handlers to Expenses component */}
+          <Route path="/" element={<Dashboard networth={networth} assets={assets} expenses={expenses} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
           <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense}/>} />
           <Route path="/overview" element={<DataOverview expenses={expenses} />} />
           <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />

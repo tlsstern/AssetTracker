@@ -117,7 +117,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                   placeholder="Asset Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
+                  style={{ borderRadius: 8, border: 'none' }}
                 />
               </div>
               <div className="col">
@@ -158,7 +158,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     min="1"
-                    style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
+                    style={{ borderRadius: 8, border: 'none' }}
                   />
                 </div>
                 <div className="col position-relative">
@@ -168,10 +168,10 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     placeholder="Search Symbol"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ borderRadius: 8, border: '1px solid #C5B0CD', marginBottom: 0 }}
+                    style={{ borderRadius: 8, border: 'none', marginBottom: 0 }}
                   />
                   {searchResults.length > 0 && (
-                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', maxHeight: 220, overflowY: 'auto', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', border: '1px solid #C5B0CD', background: '#fff', marginBottom: 0 }}>
+                    <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', maxHeight: 220, overflowY: 'auto', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', border: 'none', background: '#fff', marginBottom: 0 }}>
                       {searchResults.map((match, idx) => (
                         <li
                           key={match.symbol + idx}
@@ -186,7 +186,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     </ul>
                   )}
                   {searchQuery.length > 1 && searchResults.length === 0 && (
-                    <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: '1px solid #C5B0CD', marginBottom: 0 }}>
+                    <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: 'none', marginBottom: 0 }}>
                       No results found.
                     </div>
                   )}
@@ -201,7 +201,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                     placeholder="Value"
                     value={value}
                     onChange={(e) => setValue(e.target.value)}
-                    style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
+                    style={{ borderRadius: 8, border: 'none' }}
                   />
                 </div>
               </div>
@@ -209,7 +209,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
 
             <div className="row g-3 mb-3">
               <div className="col">
-                <select className="form-control" value={assetType} onChange={(e) => setAssetType(e.target.value)} style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}>
+                <select className="form-control" value={assetType} onChange={(e) => setAssetType(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
                   <option value="stock">Stock</option>
                   <option value="crypto">Cryptocurrency</option>
                 </select>

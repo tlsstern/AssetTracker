@@ -75,7 +75,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                   placeholder="Expense Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
+                  style={{ borderRadius: 8, border: 'none' }}
                 />
               </div>
               <div className="col">
@@ -85,7 +85,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                   placeholder="Value"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
-                  style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
+                  style={{ borderRadius: 8, border: 'none' }}
                 />
               </div>
               <div className="col">
@@ -94,11 +94,11 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                   className="form-control"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}
+                  style={{ borderRadius: 8, border: 'none' }}
                 />
               </div>
               <div className="col">
-                <select className="form-control" value={category} onChange={(e) => setCategory(e.target.value)} style={{ borderRadius: 8, border: '1px solid #C5B0CD' }}>
+                <select className="form-control" value={category} onChange={(e) => setCategory(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
                   <option>Food</option>
                   <option>Transport</option>
                   <option>Housing</option>
@@ -150,8 +150,8 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                         <div>
                           <span style={{ fontWeight: 500 }}>{expense.name}</span>
                           <div>
-                            <span className="badge bg-light text-secondary me-2" style={{ fontWeight: 400, fontSize: 13, border: '1px solid #C5B0CD' }}>{expense.category}</span>
-                            <span className="badge bg-light text-secondary" style={{ fontWeight: 400, fontSize: 13, border: '1px solid #C5B0CD' }}>{expense.date}</span>
+                            <span className="badge bg-light text-secondary me-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{expense.category}</span>
+                            <span className="badge bg-light text-secondary" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{expense.date}</span>
                           </div>
                         </div>
                       </div>

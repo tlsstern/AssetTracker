@@ -1,7 +1,7 @@
 .card {
   background: #fff;
   border-radius: 18px;
-  border: 1px solid #C5B0CD; /* Light accent for the border */
+  border: none; /* Removed the border */
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
   padding: 28px 24px;
   margin-bottom: 28px;

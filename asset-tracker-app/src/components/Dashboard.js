@@ -4,7 +4,7 @@ import Assets from './Assets';
 import TotalExpenses from './TotalExpenses';
 import './Card.css';
 
-function Dashboard({ networth, assets, expenses }) {
+function Dashboard({ networth, assets, expenses, onEditAsset, onDeleteAsset }) {
   return (
     <div>
       <div className="row">
@@ -16,8 +16,8 @@ function Dashboard({ networth, assets, expenses }) {
         </div>
       </div>
       <div className="row mt-4">
-        <div className="col-md-8 offset-md-2">
-          <Assets assets={assets} onEditAsset={() => {}} onDeleteAsset={() => {}} />
+        <div className="col-md-12">
+          <Assets assets={assets} onEditAsset={onEditAsset} onDeleteAsset={onDeleteAsset} />
         </div>
       </div>
     </div>

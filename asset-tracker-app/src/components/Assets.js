@@ -62,7 +62,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         value={editData.name}
                         onChange={handleEditChange}
                         className="form-control form-control-sm"
-                        style={{ width: 120, borderRadius: 8, border: '1px solid #C5B0CD', marginRight: 8 }}
+                        style={{ width: 120, borderRadius: 8, border: 'none', marginRight: 8 }}
                       />
                       <input
                         type="number"
@@ -70,7 +70,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         value={editData.quantity}
                         onChange={handleEditChange}
                         className="form-control form-control-sm"
-                        style={{ width: 60, borderRadius: 8, border: '1px solid #C5B0CD', marginRight: 8 }}
+                        style={{ width: 60, borderRadius: 8, border: 'none', marginRight: 8 }}
                         min={1}
                       />
                     </span>
@@ -81,7 +81,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         value={editData.value}
                         onChange={handleEditChange}
                         className="form-control form-control-sm"
-                        style={{ width: 90, borderRadius: 8, border: '1px solid #C5B0CD', marginRight: 8 }}
+                        style={{ width: 90, borderRadius: 8, border: 'none', marginRight: 8 }}
                         min={0}
                       />
                       <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>
@@ -97,7 +97,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
                       <span style={{ fontWeight: 500 }}>{asset.name}</span>
-                      {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: '1px solid #C5B0CD' }}>(x{asset.quantity})</span>}
+                      {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>(x{asset.quantity})</span>}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
