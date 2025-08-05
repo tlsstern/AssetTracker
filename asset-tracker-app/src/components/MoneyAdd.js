@@ -5,7 +5,7 @@ import Assets from './Assets';
 
 const FINNHUB_API_KEY = 'c1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
 
-const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
+const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }) => {
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -18,6 +18,11 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
   const [currency, setCurrency] = useState('CHF');
   const [accountType, setAccountType] = useState('Checking');
   const [limit, setLimit] = useState('');
+  const [destinationAccount, setDestinationAccount] = useState('');
+  const [fromAccount, setFromAccount] = useState('');
+  const [toAccount, setToAccount] = useState('');
+  const [transferAmount, setTransferAmount] = useState('');
+
 
   const searchTimeoutRef = useRef(null);
 
@@ -84,7 +89,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
     } else if (assetType === 'card') {
       assetToAdd = { ...assetToAdd, limit: parseFloat(limit) };
     } else if (assetType === 'salary') {
-      assetToAdd = { ...assetToAdd, income: parseFloat(value) };
+      assetToAdd = { ...assetToAdd, income: parseFloat(value), destinationAccount };
     }
 
 
@@ -99,7 +104,18 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
     setCurrency('CHF');
     setAccountType('Checking');
     setLimit('');
+    setDestinationAccount('');
   };
+
+  const handleTransferSubmit = (e) => {
+    e.preventDefault();
+    if (fromAccount && toAccount && transferAmount > 0) {
+      onTransfer(fromAccount, toAccount, parseFloat(transferAmount));
+      setFromAccount('');
+      setToAccount('');
+      setTransferAmount('');
+    }
+  }
 
   const handleSymbolSelect = (selectedSymbol, selectedName) => {
     setSymbol(selectedSymbol);
@@ -341,6 +357,14 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
                       style={{ borderRadius: 8, border: 'none' }}
                     />
                   </div>
+                  <div className="col">
+                    <select className="form-control" value={destinationAccount} onChange={(e) => setDestinationAccount(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
+                      <option value="">Select Account</option>
+                      {assets.filter(asset => asset.type === 'bankAccount').map(account => (
+                        <option key={account.id} value={account.id}>{account.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </>
             }
@@ -358,9 +382,47 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset }) => {
           )}
         </div>
       </div>
+      <div className="card mt-4">
+        <div className="card-header">Transfer Money</div>
+        <div className="card-body">
+          <form onSubmit={handleTransferSubmit}>
+            <div className="row g-3 align-items-end">
+              <div className="col">
+                <select className="form-control" value={fromAccount} onChange={(e) => setFromAccount(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
+                  <option value="">From Account</option>
+                  {assets.filter(asset => asset.type === 'bankAccount').map(account => (
+                    <option key={account.id} value={account.id}>{account.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col">
+                <select className="form-control" value={toAccount} onChange={(e) => setToAccount(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
+                  <option value="">To Account</option>
+                  {assets.filter(asset => asset.type === 'bankAccount').map(account => (
+                    <option key={account.id} value={account.id}>{account.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="col">
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Amount"
+                  value={transferAmount}
+                  onChange={(e) => setTransferAmount(e.target.value)}
+                  style={{ borderRadius: 8, border: 'none' }}
+                />
+              </div>
+              <div className="col-auto">
+                <button type="submit" className="btn" style={buttonStyle}>Transfer</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
       <Assets assets={assets} onEditAsset={onEditAsset} onDeleteAsset={onDeleteAsset} />
     </div>
   );
 };
 
-export default MoneyAdd;
+export default MoneyAdd; 

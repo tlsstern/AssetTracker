@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import './Card.css';
 
-const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) => {
+const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, assets }) => {
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
   const [category, setCategory] = useState('Food');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [sourceAccount, setSourceAccount] = useState('');
 
   // State for handling the inline editing
   const [editIndex, setEditIndex] = useState(null);
@@ -14,11 +15,12 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !value || !date) return;
-    onAddExpense({ name, value: parseFloat(value), category, date });
+    onAddExpense({ name, value: parseFloat(value), category, date, sourceAccount });
     setName('');
     setValue('');
     setCategory('Food');
     setDate(new Date().toISOString().slice(0, 10));
+    setSourceAccount('');
   };
 
   // Handlers for starting, changing, and saving an edit
@@ -106,6 +108,14 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                   <option>Other</option>
                 </select>
               </div>
+              <div className="col">
+                <select className="form-control" value={sourceAccount} onChange={(e) => setSourceAccount(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
+                  <option value="">Select Account</option>
+                  {assets.filter(asset => asset.type === 'bankAccount').map(account => (
+                    <option key={account.id} value={account.id}>{account.name}</option>
+                  ))}
+                </select>
+              </div>
               <div className="col-auto">
                 <button type="submit" className="btn" style={buttonStyle}>Add Expense</button>
               </div>
@@ -128,19 +138,19 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense }) =>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
                         <span role="img" aria-label="expense" style={{ fontSize: 20, marginRight: 8 }}>💸</span>
                         <input type="text" name="name" value={editData.name} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Name" />
-                        <input type="number" name="value" value={editData.value} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Value" style={{width: '100px'}} />
+                        <input type="number" name="value" value={editData.value} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Value" style={{ width: '100px' }} />
                         <input type="date" name="date" value={editData.date} onChange={handleEditChange} className="form-control form-control-sm" />
                         <select name="category" value={editData.category} onChange={handleEditChange} className="form-control form-control-sm">
-                            <option>Food</option>
-                            <option>Transport</option>
-                            <option>Housing</option>
-                            <option>Entertainment</option>
-                            <option>Other</option>
+                          <option>Food</option>
+                          <option>Transport</option>
+                          <option>Housing</option>
+                          <option>Entertainment</option>
+                          <option>Other</option>
                         </select>
                       </span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>Save</button>
-                          <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>Cancel</button>
+                        <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>Save</button>
+                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>Cancel</button>
                       </span>
                     </>
                   ) : (

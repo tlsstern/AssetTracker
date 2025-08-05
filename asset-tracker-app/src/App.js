@@ -68,7 +68,16 @@ function App() {
       .insert([{ ...asset, user_id: session.user.id }])
       .select();
     if (error) console.error('Error adding asset:', error);
-    else setAssets(prev => [...prev, ...data]);
+    else {
+      setAssets(prev => [...prev, ...data]);
+      if (asset.type === 'salary' && asset.destinationAccount) {
+        const account = assets.find(a => a.id === asset.destinationAccount);
+        if (account) {
+          const updatedAccount = { ...account, value: account.value + asset.income };
+          await editAsset(assets.indexOf(account), updatedAccount);
+        }
+      }
+    }
   };
 
   const addExpense = async (expense) => {
@@ -77,7 +86,16 @@ function App() {
       .insert([{ ...expense, user_id: session.user.id }])
       .select();
     if (error) console.error('Error adding expense:', error);
-    else setExpenses(prev => [...prev, ...data]);
+    else {
+      setExpenses(prev => [...prev, ...data]);
+      if (expense.sourceAccount) {
+        const account = assets.find(a => a.id === expense.sourceAccount);
+        if (account) {
+          const updatedAccount = { ...account, value: account.value - expense.value };
+          await editAsset(assets.indexOf(account), updatedAccount);
+        }
+      }
+    }
   };
 
   const editAsset = async (index, updatedAsset) => {
@@ -114,6 +132,20 @@ function App() {
     else setExpenses(expenses.filter((_, i) => i !== index));
   };
 
+  const handleTransfer = async (fromAccountId, toAccountId, amount) => {
+    const fromAccount = assets.find(a => a.id === fromAccountId);
+    const toAccount = assets.find(a => a.id === toAccountId);
+
+    if (fromAccount && toAccount && amount > 0 && fromAccount.value >= amount) {
+      const updatedFromAccount = { ...fromAccount, value: fromAccount.value - amount };
+      const updatedToAccount = { ...toAccount, value: toAccount.value + amount };
+
+      await editAsset(assets.indexOf(fromAccount), updatedFromAccount);
+      await editAsset(assets.indexOf(toAccount), updatedToAccount);
+    }
+  }
+
+
   if (loading) {
     return null; // Or a loading spinner
   }
@@ -138,9 +170,9 @@ function App() {
               <div className="container">
                 <Routes>
                   <Route path="/" element={<Dashboard networth={networth} assets={assets} expenses={expenses} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
-                  <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense} />} />
+                  <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense} assets={assets} />} />
                   <Route path="/overview" element={<DataOverview assets={assets} expenses={expenses} />} />
-                  <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
+                  <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} onTransfer={handleTransfer} />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
