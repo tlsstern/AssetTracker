@@ -15,6 +15,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       accountType: asset.accountType,
       limit: asset.limit,
       income: asset.income,
+      metalType: asset.metalType,
     });
   };
 
@@ -32,6 +33,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       accountType: editData.accountType,
       limit: editData.limit,
       income: editData.income,
+      metalType: editData.metalType,
     });
     setEditIndex(null);
   };
@@ -77,11 +79,11 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
             <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Limit: {asset.limit}</span>
           </>
         )
-      case 'gold':
+      case 'preciousMetal':
         return (
           <>
             <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>({asset.quantity}g)</span>}
+            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>({asset.quantity}g of {asset.metalType})</span>}
           </>
         )
       case 'salary':
@@ -119,7 +121,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         className="form-control form-control-sm"
                         style={{ width: 120, borderRadius: 8, border: 'none', marginRight: 8 }}
                       />
-                      {(asset.type === "stock" || asset.type === "crypto" || asset.type === "gold") &&
+                      {(asset.type === "stock" || asset.type === "crypto" || asset.type === "preciousMetal") &&
                         <input
                           type="number"
                           name="quantity"

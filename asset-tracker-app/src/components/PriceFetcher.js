@@ -11,7 +11,7 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
       setError(null);
       let url = '';
       const finnhubApiKey = 'c1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830'; // Finnhub API Key
-      const goldApiKey = 'goldapi-x-hIozk2fS1aJtW-io'; // Gold API Key
+      const goldApiKey = 'goldapi-f9k20712k4dveo-io'; // Gold API Key
 
       try {
         let fetchedPrice = null;
@@ -33,8 +33,8 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
           } else {
             setError('Could not fetch price. Invalid symbol or API limit reached.');
           }
-        } else if (type === 'gold') {
-          url = `https://www.goldapi.io/api/XAU/CHF`;
+        } else if (type === 'preciousMetal') {
+          url = `https://www.goldapi.io/api/${symbol}/CHF`;
           const response = await fetch(url, {
             headers: {
               'x-access-token': goldApiKey
@@ -44,7 +44,7 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
           if (data && data.price) {
             fetchedPrice = data.price;
           } else {
-            setError('Could not fetch gold price.');
+            setError('Could not fetch precious metal price.');
           }
         }
         setPrice(fetchedPrice);

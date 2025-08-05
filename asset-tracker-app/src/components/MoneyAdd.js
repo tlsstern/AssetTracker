@@ -22,6 +22,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   const [fromAccount, setFromAccount] = useState('');
   const [toAccount, setToAccount] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
+  const [metalType, setMetalType] = useState('XAU');
 
 
   const searchTimeoutRef = useRef(null);
@@ -75,7 +76,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     let assetValue = parseFloat(value);
     let assetToAdd = { name, value: assetValue, type: assetType };
 
-    if (assetType === 'stock' || assetType === 'crypto' || assetType === 'gold') {
+    if (assetType === 'stock' || assetType === 'crypto') {
       if (inputMode === 'quantity') {
         if (!name || !quantity || !fetchedPrice) return;
         assetValue = parseFloat(quantity) * fetchedPrice;
@@ -83,6 +84,15 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
       } else {
         if (!name || !value) return;
         assetToAdd = { ...assetToAdd, value: assetValue };
+      }
+    } else if (assetType === 'preciousMetal') {
+      if (inputMode === 'quantity') {
+        if (!name || !quantity || !fetchedPrice) return;
+        assetValue = parseFloat(quantity) * fetchedPrice;
+        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), metalType };
+      } else {
+        if (!name || !value) return;
+        assetToAdd = { ...assetToAdd, value: assetValue, metalType };
       }
     } else if (assetType === 'bankAccount') {
       assetToAdd = { ...assetToAdd, currency, accountType };
@@ -149,12 +159,12 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                   <option value="crypto">Cryptocurrency</option>
                   <option value="bankAccount">Bank Account</option>
                   <option value="card">Card</option>
-                  <option value="gold">Gold</option>
+                  <option value="preciousMetal">Precious Metal</option>
                   <option value="salary">Salary</option>
                 </select>
               </div>
             </div>
-            {(assetType === 'stock' || assetType === 'crypto' || assetType === 'gold') &&
+            {(assetType === 'stock' || assetType === 'crypto') &&
               <>
                 <div className="row g-3 align-items-end mb-3">
                   <div className="col">
@@ -253,6 +263,43 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                     </div>
                   </div>
                 )}
+              </>
+            }
+            {assetType === 'preciousMetal' &&
+              <>
+                <div className="row g-3 align-items-end mb-3">
+                  <div className="col">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Asset Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      style={{ borderRadius: 8, border: 'none' }}
+                    />
+                  </div>
+                  <div className="col">
+                    <select className="form-control" value={metalType} onChange={(e) => setMetalType(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
+                      <option value="XAU">Gold</option>
+                      <option value="XAG">Silver</option>
+                      <option value="XPT">Platinum</option>
+                      <option value="XPD">Palladium</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="row g-3 align-items-end mb-3">
+                  <div className="col">
+                    <input
+                      type="number"
+                      className="form-control"
+                      placeholder="Quantity (grams)"
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
+                      min="0"
+                      style={{ borderRadius: 8, border: 'none' }}
+                    />
+                  </div>
+                </div>
               </>
             }
             {assetType === 'bankAccount' &&
@@ -375,9 +422,14 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
               </div>
             </div>
           </form>
-          {symbol && (assetType === 'stock' || assetType === 'crypto' || assetType === 'gold') && inputMode === 'quantity' && (
+          {symbol && (assetType === 'stock' || assetType === 'crypto') && inputMode === 'quantity' && (
             <div className="mt-3">
               <PriceFetcher symbol={symbol} type={assetType} onPriceFetched={handlePriceFetched} />
+            </div>
+          )}
+          {assetType === 'preciousMetal' && inputMode === 'quantity' && (
+            <div className="mt-3">
+              <PriceFetcher symbol={metalType} type={assetType} onPriceFetched={handlePriceFetched} />
             </div>
           )}
         </div>
@@ -425,4 +477,4 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   );
 };
 
-export default MoneyAdd; 
+export default MoneyAdd;
