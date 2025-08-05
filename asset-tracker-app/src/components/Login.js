@@ -13,7 +13,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
-    // A simple regex for email validation
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
