@@ -8,7 +8,7 @@ const FINNHUB_API_KEY = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
 const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }) => {
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState(1);
   const [symbol, setSymbol] = useState('');
   const [assetType, setAssetType] = useState('stock');
   const [searchResults, setSearchResults] = useState([]);
@@ -119,7 +119,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     onAddAsset(assetToAdd);
     setName('');
     setValue('');
-    setQuantity('');
+    setQuantity(1);
     setSymbol('');
     setSearchQuery('');
     setSearchResults([]);
@@ -427,12 +427,22 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
           </form>
           {symbol && (assetType === 'stock' || assetType === 'crypto') && inputMode === 'quantity' && (
             <div className="mt-3">
-              <PriceFetcher symbol={symbol} type={assetType} onPriceFetched={handlePriceFetched} />
+              <PriceFetcher 
+                symbol={symbol} 
+                type={assetType} 
+                onPriceFetched={handlePriceFetched}
+                quantity={quantity || 1}
+              />
             </div>
           )}
           {assetType === 'preciousMetal' && (
             <div className="mt-3">
-              <PriceFetcher symbol={metalType} type={assetType} onPriceFetched={handlePriceFetched} />
+              <PriceFetcher 
+                symbol={metalType} 
+                type={assetType} 
+                onPriceFetched={handlePriceFetched} 
+                quantity={quantity || 1} 
+              />
             </div>
           )}
         </div>

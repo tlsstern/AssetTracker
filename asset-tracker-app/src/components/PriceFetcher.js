@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
+const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
   const [price, setPrice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -115,12 +115,20 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
     if (symbol) {
         fetchPrice();
     }
-  }, [symbol, type, onPriceFetched]);
+  }, [symbol, type, onPriceFetched, quantity]);
 
   if (loading) return <p>Loading price...</p>;
   if (error) return <p>Error: {error}</p>;
   if (price == null) return <p>Price not available.</p>;
 
+  // Display total price based on quantity for all asset types when quantity is provided
+  if (quantity > 0) {
+    const totalPrice = parseFloat(price) * parseFloat(quantity);
+    return (
+      <p>Price: CHF {totalPrice.toFixed(2)}</p>
+    );
+  }
+  
   return (
     <p>Current Price: CHF {parseFloat(price).toFixed(2)}</p>
   );
