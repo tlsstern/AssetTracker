@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// App.js
+import React, { useState, useEffect, useCallback } from 'react';
 import { Route, Routes, Navigate, Link } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
@@ -18,6 +19,18 @@ function App() {
   const [assets, setAssets] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [networth, setNetworth] = useState(0);
+
+  const getAssets = useCallback(async () => {
+    if (!session) return;
+    const { data } = await supabase.from('assets').select('*').eq('user_id', session.user.id);
+    setAssets(data || []);
+  }, [session]);
+
+  const getExpenses = useCallback(async () => {
+    if (!session) return;
+    const { data } = await supabase.from('expenses').select('*').eq('user_id', session.user.id);
+    setExpenses(data || []);
+  }, [session]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -39,44 +52,33 @@ function App() {
       getAssets();
       getExpenses();
     }
-  }, [session]);
+  }, [session, getAssets, getExpenses]);
 
   useEffect(() => {
     const calculateNetworth = () => {
-      const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
-      const totalExpenses = expenses.reduce((sum, expense) => sum + expense.value, 0);
-      setNetworth(totalAssets - totalExpenses);
+      const totalAssets = assets.reduce((sum, asset) => sum + (asset.value || 0), 0);
+      // Expenses are not subtracted from net worth directly, but from bank accounts
+      setNetworth(totalAssets);
     };
     calculateNetworth();
-  }, [assets, expenses]);
-
-  const getAssets = async () => {
-    if (!session) return;
-    const { data } = await supabase.from('assets').select('*').eq('user_id', session.user.id);
-    setAssets(data || []);
-  };
-
-  const getExpenses = async () => {
-    if (!session) return;
-    const { data } = await supabase.from('expenses').select('*').eq('user_id', session.user.id);
-    setExpenses(data || []);
-  };
+  }, [assets]);
 
   const addAsset = async (asset) => {
     const { data, error } = await supabase
       .from('assets')
       .insert([{ ...asset, user_id: session.user.id }])
       .select();
-    if (error) console.error('Error adding asset:', error);
-    else {
-      setAssets(prev => [...prev, ...data]);
-      if (asset.type === 'salary' && asset.destinationAccount) {
-        const account = assets.find(a => a.id === asset.destinationAccount);
+    if (error) {
+      console.error('Error adding asset:', error);
+    } else {
+      if (asset.type === 'salary' && asset.destination_account) {
+        const account = assets.find(a => a.id === asset.destination_account);
         if (account) {
           const updatedAccount = { ...account, value: account.value + asset.income };
-          await editAsset(assets.indexOf(account), updatedAccount);
+          await editAsset(assets.findIndex(a => a.id === asset.destination_account), updatedAccount);
         }
       }
+      getAssets();
     }
   };
 
@@ -85,16 +87,17 @@ function App() {
       .from('expenses')
       .insert([{ ...expense, user_id: session.user.id }])
       .select();
-    if (error) console.error('Error adding expense:', error);
-    else {
-      setExpenses(prev => [...prev, ...data]);
-      if (expense.sourceAccount) {
-        const account = assets.find(a => a.id === expense.sourceAccount);
+    if (error) {
+      console.error('Error adding expense:', error);
+    } else {
+      if (expense.source_account) {
+        const account = assets.find(a => a.id === expense.source_account);
         if (account) {
           const updatedAccount = { ...account, value: account.value - expense.value };
-          await editAsset(assets.indexOf(account), updatedAccount);
+          await editAsset(assets.findIndex(a => a.id === expense.source_account), updatedAccount);
         }
       }
+      getExpenses();
     }
   };
 
@@ -104,15 +107,21 @@ function App() {
       .from('assets')
       .update(updatedAsset)
       .eq('id', assetToUpdate.id);
-    if (error) console.error('Error updating asset:', error);
-    else getAssets();
+    if (error) {
+      console.error('Error updating asset:', error);
+    } else {
+      getAssets();
+    }
   };
 
   const deleteAsset = async (index) => {
     const assetToDelete = assets[index];
     const { error } = await supabase.from('assets').delete().eq('id', assetToDelete.id);
-    if (error) console.error('Error deleting asset:', error);
-    else setAssets(assets.filter((_, i) => i !== index));
+    if (error) {
+      console.error('Error deleting asset:', error);
+    } else {
+      getAssets();
+    }
   };
 
   const editExpense = async (index, updatedExpense) => {
@@ -121,15 +130,21 @@ function App() {
       .from('expenses')
       .update(updatedExpense)
       .eq('id', expenseToUpdate.id);
-    if (error) console.error('Error updating expense:', error);
-    else getExpenses();
+    if (error) {
+      console.error('Error updating expense:', error);
+    } else {
+      getExpenses();
+    }
   };
 
   const deleteExpense = async (index) => {
     const expenseToDelete = expenses[index];
     const { error } = await supabase.from('expenses').delete().eq('id', expenseToDelete.id);
-    if (error) console.error('Error deleting expense:', error);
-    else setExpenses(expenses.filter((_, i) => i !== index));
+    if (error) {
+      console.error('Error deleting expense:', error);
+    } else {
+      getExpenses();
+    }
   };
 
   const handleTransfer = async (fromAccountId, toAccountId, amount) => {
@@ -145,9 +160,8 @@ function App() {
     }
   }
 
-
   if (loading) {
-    return null; // Or a loading spinner
+    return <div>Loading...</div>;
   }
 
   return (

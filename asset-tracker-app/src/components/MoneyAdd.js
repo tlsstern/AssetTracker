@@ -28,7 +28,25 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   const searchTimeoutRef = useRef(null);
 
   useEffect(() => {
-    if (searchQuery.length > 1) {
+    if (assetType === 'preciousMetal') {
+      const metalNameMap = {
+        'XAU': 'Gold',
+        'XAG': 'Silver',
+        'XPT': 'Platinum',
+        'XPD': 'Palladium'
+      };
+      setName(metalNameMap[metalType]);
+    } else {
+      // Reset name when switching away from precious metals, unless user has typed something
+      if (!searchQuery && !symbol) {
+         setName('');
+      }
+    }
+  }, [assetType, metalType, searchQuery, symbol]);
+
+
+  useEffect(() => {
+    if (searchQuery.length > 1 && (assetType === 'stock' || assetType === 'crypto')) {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
@@ -86,20 +104,15 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
         assetToAdd = { ...assetToAdd, value: assetValue };
       }
     } else if (assetType === 'preciousMetal') {
-      if (inputMode === 'quantity') {
-        if (!name || !quantity || !fetchedPrice) return;
+        if (!quantity || !fetchedPrice) return;
         assetValue = parseFloat(quantity) * fetchedPrice;
-        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), metalType };
-      } else {
-        if (!name || !value) return;
-        assetToAdd = { ...assetToAdd, value: assetValue, metalType };
-      }
+        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), metal_type: metalType };
     } else if (assetType === 'bankAccount') {
-      assetToAdd = { ...assetToAdd, currency, accountType };
+      assetToAdd = { ...assetToAdd, currency, account_type: accountType };
     } else if (assetType === 'card') {
       assetToAdd = { ...assetToAdd, limit: parseFloat(limit) };
     } else if (assetType === 'salary') {
-      assetToAdd = { ...assetToAdd, income: parseFloat(value), destinationAccount };
+      assetToAdd = { ...assetToAdd, income: parseFloat(value), destination_account: destinationAccount };
     }
 
 
@@ -269,16 +282,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
               <>
                 <div className="row g-3 align-items-end mb-3">
                   <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Asset Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
-                  </div>
-                  <div className="col">
                     <select className="form-control" value={metalType} onChange={(e) => setMetalType(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
                       <option value="XAU">Gold</option>
                       <option value="XAG">Silver</option>
@@ -286,8 +289,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                       <option value="XPD">Palladium</option>
                     </select>
                   </div>
-                </div>
-                <div className="row g-3 align-items-end mb-3">
                   <div className="col">
                     <input
                       type="number"
@@ -427,7 +428,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
               <PriceFetcher symbol={symbol} type={assetType} onPriceFetched={handlePriceFetched} />
             </div>
           )}
-          {assetType === 'preciousMetal' && inputMode === 'quantity' && (
+          {assetType === 'preciousMetal' && (
             <div className="mt-3">
               <PriceFetcher symbol={metalType} type={assetType} onPriceFetched={handlePriceFetched} />
             </div>

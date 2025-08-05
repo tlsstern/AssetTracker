@@ -15,7 +15,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !value || !date) return;
-    onAddExpense({ name, value: parseFloat(value), category, date, sourceAccount });
+    onAddExpense({ name, value: parseFloat(value), category, date, source_account: sourceAccount });
     setName('');
     setValue('');
     setCategory('Food');

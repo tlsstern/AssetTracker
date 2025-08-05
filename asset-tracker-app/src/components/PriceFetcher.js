@@ -11,7 +11,7 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
       setError(null);
       let url = '';
       const finnhubApiKey = 'c1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830'; // Finnhub API Key
-      const goldApiKey = 'goldapi-f9k20712k4dveo-io'; // Gold API Key
+      const goldApiKey = 'goldapi-f9k20712k4dveo-io'; // Gold API Key - Replace with your key
 
       try {
         let fetchedPrice = null;
@@ -57,7 +57,9 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
       }
     };
 
-    fetchPrice();
+    if (symbol) {
+        fetchPrice();
+    }
   }, [symbol, type, onPriceFetched]);
 
   if (loading) return <p>Loading price...</p>;

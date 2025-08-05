@@ -12,10 +12,10 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       quantity: asset.quantity || 1,
       type: asset.type,
       currency: asset.currency,
-      accountType: asset.accountType,
+      accountType: asset.account_type,
       limit: asset.limit,
       income: asset.income,
-      metalType: asset.metalType,
+      metalType: asset.metal_type,
     });
   };
 
@@ -30,10 +30,10 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       quantity: parseFloat(editData.quantity),
       type: editData.type,
       currency: editData.currency,
-      accountType: editData.accountType,
+      account_type: editData.accountType,
       limit: editData.limit,
       income: editData.income,
-      metalType: editData.metalType,
+      metal_type: editData.metalType,
     });
     setEditIndex(null);
   };
@@ -68,7 +68,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
         return (
           <>
             <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.accountType}</span>
+            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.account_type}</span>
             <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.currency}</span>
           </>
         )
@@ -83,7 +83,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
         return (
           <>
             <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>({asset.quantity}g of {asset.metalType})</span>}
+            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>({asset.quantity}g)</span>}
           </>
         )
       case 'salary':
