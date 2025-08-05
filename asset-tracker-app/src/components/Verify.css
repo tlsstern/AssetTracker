@@ -1,0 +1,64 @@
+.verify-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #F3E2D4;
+  padding: 2rem;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Styles for the OTP input */
+.otp-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    cursor: text;
+}
+
+.otp-box {
+    width: 45px;
+    height: 55px;
+    border: 1px solid #415E72;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #17313E;
+    background-color: #fff;
+    transition: all 0.2s;
+    position: relative; /* Required for the pseudo-element cursor */
+}
+
+.otp-hidden-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    left: -9999px;
+    caret-color: transparent;
+}
+
+/* Add highlight to the active box */
+.otp-box.active {
+    border-color: #687FE5;
+    box-shadow: 0 0 0 2px rgba(104, 127, 229, 0.5);
+}
+
+/* Create the blinking cursor using a pseudo-element */
+.otp-box.active::after {
+    content: '|';
+    position: absolute;
+    animation: blink 1.1s infinite step-start;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}

@@ -203,3 +203,26 @@
   line-height: 1rem;
   color: #C5B0CD;
 }
+
+/* Find and replace these rules in Login.css */
+
+.form-message {
+  margin-top: 1rem;
+  margin-bottom: -1rem; /* Adjust spacing */
+  color: #F3E2D4; /* Use the light text color for better contrast */
+  font-size: 0.875rem;
+  text-align: center;
+  min-height: 20px; /* Reserve space to prevent layout shift */
+  transition: opacity 0.3s;
+  opacity: 0.9;
+}
+
+.form-message.error {
+  color: #ff8a8a; /* A brighter red for dark backgrounds */
+  font-weight: 500;
+  opacity: 1;
+}
+
+.input-group input.error-input {
+  border-color: #e54848;
+}

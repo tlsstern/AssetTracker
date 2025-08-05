@@ -1,39 +1,71 @@
 import React, { useState } from 'react';
-import './Login.css'; // Import the new CSS file
+import './Login.css';
 import { supabase } from '../supabaseClient';
+import { useNavigate } from 'react-router-dom'; // This was the missing import
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isFlipped, setIsFlipped] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+  const navigate = useNavigate(); // This line initializes the navigate function
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setMessage('');
+    setIsError(false);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert(error.error_description || error.message);
+    if (error) {
+        setMessage(error.error_description || error.message);
+        setIsError(true);
+    }
     setLoading(false);
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setMessage('');
+    setIsError(false);
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
-      alert(error.error_description || error.message);
+      setMessage(error.error_description || error.message);
+      setIsError(true);
     } else {
-      alert('Check your email for a confirmation link!');
+      setIsError(false);
+      navigate(`/verify?email=${encodeURIComponent(email)}`);
     }
     setLoading(false);
   };
   
   const socialLogin = async (provider) => {
+    setMessage('');
+    setIsError(false);
     const { error } = await supabase.auth.signInWithOAuth({ provider });
     if (error) {
-      alert(error.error_description || error.message);
+      setMessage(error.error_description || error.message);
+      setIsError(true);
     }
   };
+  
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (message) {
+        setMessage('');
+        setIsError(false);
+    }
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    if (message) {
+        setMessage('');
+        setIsError(false);
+    }
+  }
 
   return (
     <div className="login-page-wrapper">
@@ -46,18 +78,21 @@ const Login = () => {
             {/* Front side of the card (Login) */}
             <div className="front">
               <div className="form-container">
-                <p className="title">Login</p>
-                <form className="form" onSubmit={handleLogin}>
-                  <div className="input-group">
-                    <label htmlFor="email">Email</label>
-                    <input type="email" name="email" id="email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
-                  </div>
-                  <div className="input-group">
-                    <label htmlFor="password">Password</label>
-                    <input type="password" name="password" id="password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} />
-                  </div>
-                  <button className="sign" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</button>
-                </form>
+                <div>
+                  <p className="title">Login</p>
+                  <p className={`form-message ${isError ? 'error' : ''}`}>{message}</p>
+                  <form className="form" onSubmit={handleLogin}>
+                    <div className="input-group">
+                      <label htmlFor="email">Email</label>
+                      <input type="email" name="email" id="email" placeholder="" value={email} onChange={handleEmailChange} className={isError ? 'error-input' : ''} />
+                    </div>
+                    <div className="input-group">
+                      <label htmlFor="password">Password</label>
+                      <input type="password" name="password" id="password" placeholder="" value={password} onChange={handlePasswordChange} className={isError ? 'error-input' : ''} />
+                    </div>
+                    <button className="sign" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</button>
+                  </form>
+                </div>
                 <div>
                   <div className="social-message">
                     <div className="line" />
@@ -88,14 +123,15 @@ const Login = () => {
               <div className="form-container">
                 <div>
                   <p className="title">Sign Up</p>
+                  <p className={`form-message ${isError ? 'error' : ''}`}>{message}</p>
                   <form className="form" onSubmit={handleSignUp}>
                     <div className="input-group">
                       <label htmlFor="signup-email">Email</label>
-                      <input type="email" name="email" id="signup-email" placeholder="" value={email} onChange={(e) => setEmail(e.target.value)} />
+                      <input type="email" name="email" id="signup-email" placeholder="" value={email} onChange={handleEmailChange} className={isError ? 'error-input' : ''} />
                     </div>
                     <div className="input-group">
                       <label htmlFor="signup-password">Password</label>
-                      <input type="password" name="password" id="signup-password" placeholder="" value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <input type="password" name="password" id="signup-password" placeholder="" value={password} onChange={handlePasswordChange} className={isError ? 'error-input' : ''} />
                     </div>
                     <button className="sign" disabled={loading}>{loading ? 'Creating account...' : 'Sign up'}</button>
                   </form>
