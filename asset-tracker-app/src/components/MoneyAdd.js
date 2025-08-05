@@ -3,12 +3,12 @@ import './Card.css';
 import PriceFetcher from './PriceFetcher';
 import Assets from './Assets';
 
-const FINNHUB_API_KEY = 'c1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
+const FINNHUB_API_KEY = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
 
 const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }) => {
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState('');
   const [symbol, setSymbol] = useState('');
   const [assetType, setAssetType] = useState('stock');
   const [searchResults, setSearchResults] = useState([]);
@@ -119,7 +119,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     onAddAsset(assetToAdd);
     setName('');
     setValue('');
-    setQuantity(1);
+    setQuantity('');
     setSymbol('');
     setSearchQuery('');
     setSearchResults([]);
@@ -227,7 +227,8 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                         placeholder="Quantity"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
-                        min="1"
+                        min="0.01"
+                        step="0.01"
                         style={{ borderRadius: 8, border: 'none' }}
                       />
                     </div>
@@ -296,7 +297,8 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                       placeholder="Quantity (grams)"
                       value={quantity}
                       onChange={(e) => setQuantity(e.target.value)}
-                      min="0"
+                      min="0.01"
+                      step="0.01"
                       style={{ borderRadius: 8, border: 'none' }}
                     />
                   </div>
