@@ -10,32 +10,41 @@ const PriceFetcher = ({ symbol, type, onPriceFetched }) => {
       setLoading(true);
       setError(null);
       let url = '';
-      const apiKey = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830'; // Finnhub API Key
+      const finnhubApiKey = 'c1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830'; // Finnhub API Key
+      const goldApiKey = 'goldapi-x-hIozk2fS1aJtW-io'; // Gold API Key
 
       try {
         let fetchedPrice = null;
         if (type === 'stock') {
-          // Finnhub stock quote endpoint
-          url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${apiKey}`;
+          url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${finnhubApiKey}`;
           const response = await fetch(url);
           const data = await response.json();
-          // Finnhub returns { c: current price, ... }
           if (data && typeof data.c === 'number') {
             fetchedPrice = data.c;
           } else {
             setError('Could not fetch price. Invalid symbol or API limit reached.');
           }
         } else if (type === 'crypto') {
-          // Finnhub crypto quote endpoint (symbol format: BINANCE:BTCUSDT)
-          // We'll try with BINANCE:SYMBOLUSDT
-          url = `https://finnhub.io/api/v1/crypto/price?symbol=BINANCE:${symbol}USDT&token=${apiKey}`;
+          url = `https://finnhub.io/api/v1/crypto/candle?symbol=BINANCE:${symbol}USDT&resolution=D&count=1&token=${finnhubApiKey}`;
           const response = await fetch(url);
           const data = await response.json();
-          // Finnhub returns { price: ... }
-          if (data && typeof data.price === 'number') {
-            fetchedPrice = data.price;
+          if (data && data.c && data.c.length > 0) {
+            fetchedPrice = data.c[data.c.length - 1];
           } else {
             setError('Could not fetch price. Invalid symbol or API limit reached.');
+          }
+        } else if (type === 'gold') {
+          url = `https://www.goldapi.io/api/XAU/CHF`;
+          const response = await fetch(url, {
+            headers: {
+              'x-access-token': goldApiKey
+            }
+          });
+          const data = await response.json();
+          if (data && data.price) {
+            fetchedPrice = data.price;
+          } else {
+            setError('Could not fetch gold price.');
           }
         }
         setPrice(fetchedPrice);

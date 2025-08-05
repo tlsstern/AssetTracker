@@ -40,7 +40,7 @@ function App() {
       getExpenses();
     }
   }, [session]);
-  
+
   useEffect(() => {
     const calculateNetworth = () => {
       const totalAssets = assets.reduce((sum, asset) => sum + asset.value, 0);
@@ -51,13 +51,13 @@ function App() {
   }, [assets, expenses]);
 
   const getAssets = async () => {
-    if(!session) return;
+    if (!session) return;
     const { data } = await supabase.from('assets').select('*').eq('user_id', session.user.id);
     setAssets(data || []);
   };
 
   const getExpenses = async () => {
-    if(!session) return;
+    if (!session) return;
     const { data } = await supabase.from('expenses').select('*').eq('user_id', session.user.id);
     setExpenses(data || []);
   };
@@ -113,7 +113,7 @@ function App() {
     if (error) console.error('Error deleting expense:', error);
     else setExpenses(expenses.filter((_, i) => i !== index));
   };
-  
+
   if (loading) {
     return null; // Or a loading spinner
   }
@@ -138,8 +138,8 @@ function App() {
               <div className="container">
                 <Routes>
                   <Route path="/" element={<Dashboard networth={networth} assets={assets} expenses={expenses} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
-                  <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense}/>} />
-                  <Route path="/overview" element={<DataOverview expenses={expenses} />} />
+                  <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense} />} />
+                  <Route path="/overview" element={<DataOverview assets={assets} expenses={expenses} />} />
                   <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/" />} />

@@ -10,6 +10,11 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       name: asset.name,
       value: asset.value,
       quantity: asset.quantity || 1,
+      type: asset.type,
+      currency: asset.currency,
+      accountType: asset.accountType,
+      limit: asset.limit,
+      income: asset.income,
     });
   };
 
@@ -22,10 +27,15 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       name: editData.name,
       value: parseFloat(editData.value),
       quantity: parseFloat(editData.quantity),
+      type: editData.type,
+      currency: editData.currency,
+      accountType: editData.accountType,
+      limit: editData.limit,
+      income: editData.income,
     });
     setEditIndex(null);
   };
-  
+
   const buttonStyle = {
     borderRadius: 8,
     fontWeight: 600,
@@ -41,6 +51,51 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
     color: '#687FE5',
     border: '1px solid #687FE5',
   };
+
+  const renderAssetDetails = (asset) => {
+    switch (asset.type) {
+      case 'stock':
+      case 'crypto':
+        return (
+          <>
+            <span style={{ fontWeight: 500 }}>{asset.name}</span>
+            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>(x{asset.quantity})</span>}
+          </>
+        )
+      case 'bankAccount':
+        return (
+          <>
+            <span style={{ fontWeight: 500 }}>{asset.name}</span>
+            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.accountType}</span>
+            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.currency}</span>
+          </>
+        )
+      case 'card':
+        return (
+          <>
+            <span style={{ fontWeight: 500 }}>{asset.name}</span>
+            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Limit: {asset.limit}</span>
+          </>
+        )
+      case 'gold':
+        return (
+          <>
+            <span style={{ fontWeight: 500 }}>{asset.name}</span>
+            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>({asset.quantity}g)</span>}
+          </>
+        )
+      case 'salary':
+        return (
+          <>
+            <span style={{ fontWeight: 500 }}>{asset.name}</span>
+            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Monthly</span>
+          </>
+        )
+      default:
+        return <span style={{ fontWeight: 500 }}>{asset.name}</span>
+    }
+  }
+
 
   return (
     <div className="card">
@@ -64,15 +119,17 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         className="form-control form-control-sm"
                         style={{ width: 120, borderRadius: 8, border: 'none', marginRight: 8 }}
                       />
-                      <input
-                        type="number"
-                        name="quantity"
-                        value={editData.quantity}
-                        onChange={handleEditChange}
-                        className="form-control form-control-sm"
-                        style={{ width: 60, borderRadius: 8, border: 'none', marginRight: 8 }}
-                        min={1}
-                      />
+                      {(asset.type === "stock" || asset.type === "crypto" || asset.type === "gold") &&
+                        <input
+                          type="number"
+                          name="quantity"
+                          value={editData.quantity}
+                          onChange={handleEditChange}
+                          className="form-control form-control-sm"
+                          style={{ width: 60, borderRadius: 8, border: 'none', marginRight: 8 }}
+                          min={1}
+                        />
+                      }
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <input
@@ -96,12 +153,11 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                   <>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
-                      <span style={{ fontWeight: 500 }}>{asset.name}</span>
-                      {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>(x{asset.quantity})</span>}
+                      {renderAssetDetails(asset)}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
-                        CHF { asset.value.toFixed(2) }
+                        CHF {asset.value.toFixed(2)}
                       </span>
                       <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, asset)}>
                         Edit
