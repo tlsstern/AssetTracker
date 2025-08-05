@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { supabase } from '../supabaseClient';
-import { useNavigate } from 'react-router-dom'; // This was the missing import
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -10,13 +10,30 @@ const Login = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
-  const navigate = useNavigate(); // This line initializes the navigate function
+  const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    // A simple regex for email validation
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage('');
     setIsError(false);
+
+    if (!validateEmail(email)) {
+      setMessage('Please enter a valid email address.');
+      setIsError(true);
+      return;
+    }
+    if (!password) {
+        setMessage('Please enter your password.');
+        setIsError(true);
+        return;
+    }
+
+    setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
         setMessage(error.error_description || error.message);
@@ -27,9 +44,21 @@ const Login = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage('');
     setIsError(false);
+
+    if (!validateEmail(email)) {
+      setMessage('Please enter a valid email address.');
+      setIsError(true);
+      return;
+    }
+    if (password.length < 6) {
+        setMessage('Password must be at least 6 characters long.');
+        setIsError(true);
+        return;
+    }
+
+    setLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
       setMessage(error.error_description || error.message);
@@ -81,7 +110,7 @@ const Login = () => {
                 <div>
                   <p className="title">Login</p>
                   <p className={`form-message ${isError ? 'error' : ''}`}>{message}</p>
-                  <form className="form" onSubmit={handleLogin}>
+                  <form className="form" onSubmit={handleLogin} noValidate>
                     <div className="input-group">
                       <label htmlFor="email">Email</label>
                       <input type="email" name="email" id="email" placeholder="" value={email} onChange={handleEmailChange} className={isError ? 'error-input' : ''} />
@@ -124,7 +153,7 @@ const Login = () => {
                 <div>
                   <p className="title">Sign Up</p>
                   <p className={`form-message ${isError ? 'error' : ''}`}>{message}</p>
-                  <form className="form" onSubmit={handleSignUp}>
+                  <form className="form" onSubmit={handleSignUp} noValidate>
                     <div className="input-group">
                       <label htmlFor="signup-email">Email</label>
                       <input type="email" name="email" id="signup-email" placeholder="" value={email} onChange={handleEmailChange} className={isError ? 'error-input' : ''} />
