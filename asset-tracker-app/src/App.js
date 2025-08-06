@@ -28,7 +28,7 @@ function App() {
 
   const getTransactions = useCallback(async () => {
     if (!session) return;
-    const { data } = await supabase.from('expenses').select('*').eq('user_id', session.user.id);
+    const { data } = await supabase.from('transactions').select('*').eq('user_id', session.user.id);
     setTransactions(data || []);
   }, [session]);
 
@@ -84,7 +84,7 @@ function App() {
 
   const addTransaction = async (transaction) => {
     const { data, error } = await supabase
-      .from('expenses')
+      .from('transactions')
       .insert([{ ...transaction, user_id: session.user.id }])
       .select();
     if (error) {
@@ -128,7 +128,7 @@ function App() {
   const editTransaction = async (index, updatedTransaction) => {
     const transactionToUpdate = transactions[index];
     const { data, error } = await supabase
-      .from('expenses')
+      .from('transactions')
       .update(updatedTransaction)
       .eq('id', transactionToUpdate.id);
     if (error) {
@@ -140,7 +140,7 @@ function App() {
 
   const deleteTransaction = async (index) => {
     const transactionToDelete = transactions[index];
-    const { error } = await supabase.from('expenses').delete().eq('id', transactionToDelete.id);
+    const { error } = await supabase.from('transactions').delete().eq('id', transactionToDelete.id);
     if (error) {
       console.error('Error deleting transaction:', error);
     } else {
