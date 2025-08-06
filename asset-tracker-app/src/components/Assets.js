@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formatCHF, formatSwissNumber } from '../utils/formatters';
+import { Icons } from './Icons';
 
 const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
   const [editIndex, setEditIndex] = useState(null);
@@ -39,21 +40,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
     setEditIndex(null);
   };
 
-  const buttonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: '#687FE5',
-    color: '#F3E2D4',
-    border: 'none',
-  };
-
-  const outlineButtonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: 'transparent',
-    color: '#687FE5',
-    border: '1px solid #687FE5',
-  };
+  // Button styles are now handled by CSS classes
 
   const renderAssetDetails = (asset) => {
     switch (asset.type) {
@@ -113,7 +100,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                 {editIndex === index ? (
                   <>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
-                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
+                      <span style={{ marginRight: 8, color: '#667eea' }}>{Icons.wallet}</span>
                       <input
                         type="text"
                         name="name"
@@ -144,10 +131,10 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         style={{ width: 90, borderRadius: 8, border: 'none', marginRight: 8 }}
                         min={0}
                       />
-                      <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>
+                      <button className="btn btn-sm btn-primary" onClick={() => saveEdit(index)}>
                         Save
                       </button>
-                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>
+                      <button className="btn btn-sm btn-outline" onClick={() => setEditIndex(null)}>
                         Cancel
                       </button>
                     </span>
@@ -155,17 +142,17 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                 ) : (
                   <>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
+                      <span style={{ marginRight: 8, color: '#667eea' }}>{Icons.wallet}</span>
                       {renderAssetDetails(asset)}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
+                      <span className="badge rounded-pill badge-primary">
                         {formatCHF(asset.value)}
                       </span>
-                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, asset)}>
+                      <button className="btn btn-sm btn-outline" onClick={() => startEdit(index, asset)}>
                         Edit
                       </button>
-                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteAsset(index)}>
+                      <button className="btn btn-sm btn-outline" onClick={() => onDeleteAsset(index)}>
                         Delete
                       </button>
                     </span>
