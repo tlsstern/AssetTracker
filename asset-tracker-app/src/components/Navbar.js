@@ -6,7 +6,7 @@ function Navbar() {
   return (
     <nav className="Navbar">
       <Link to="/">Dashboard</Link>
-      <Link to="/expenses">Expenses</Link>
+      <Link to="/transactions">Transactions</Link>
       <Link to="/overview">Data Overview</Link>
       <Link to="/add">Manage Assets</Link>
     </nav>

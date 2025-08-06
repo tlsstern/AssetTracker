@@ -4,7 +4,7 @@ import './Card.css';
 import { Chart, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
-const DataOverview = ({ assets, expenses }) => {
+const DataOverview = ({ assets, transactions }) => {
   const getAssetsByType = () => {
     const assetsByType = {};
     assets.forEach(asset => {
@@ -17,20 +17,21 @@ const DataOverview = ({ assets, expenses }) => {
     return assetsByType;
   };
 
-  const getExpensesByCategory = () => {
-    const expensesByCategory = {};
-    expenses.forEach(expense => {
-      if (expensesByCategory[expense.category]) {
-        expensesByCategory[expense.category] += expense.value;
+  const getTransactionsByCategory = () => {
+    const transactionsByCategory = { income: {}, expenses: {} };
+    transactions.forEach(transaction => {
+      const type = transaction.transaction_type === 'income' ? 'income' : 'expenses';
+      if (transactionsByCategory[type][transaction.category]) {
+        transactionsByCategory[type][transaction.category] += transaction.value;
       } else {
-        expensesByCategory[expense.category] = expense.value;
+        transactionsByCategory[type][transaction.category] = transaction.value;
       }
     });
-    return expensesByCategory;
+    return transactionsByCategory;
   };
 
   const assetsByType = getAssetsByType();
-  const expensesByCategory = getExpensesByCategory();
+  const transactionsByCategory = getTransactionsByCategory();
 
   const assetsData = {
     labels: Object.keys(assetsByType),
@@ -58,11 +59,11 @@ const DataOverview = ({ assets, expenses }) => {
   };
 
   const expensesData = {
-    labels: Object.keys(expensesByCategory),
+    labels: Object.keys(transactionsByCategory.expenses),
     datasets: [
       {
         label: 'Expenses by Category',
-        data: Object.values(expensesByCategory),
+        data: Object.values(transactionsByCategory.expenses),
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,
@@ -70,39 +71,73 @@ const DataOverview = ({ assets, expenses }) => {
     ],
   };
 
+  const incomeData = {
+    labels: Object.keys(transactionsByCategory.income),
+    datasets: [
+      {
+        label: 'Income by Category',
+        data: Object.values(transactionsByCategory.income),
+        backgroundColor: 'rgba(40, 167, 69, 0.2)',
+        borderColor: 'rgba(40, 167, 69, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
-    <div className="row">
-      <div className="col-md-6">
-        <div className="card">
-          <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span role="img" aria-label="chart" style={{ fontSize: 22 }}>📊</span>
-            Assets by Type
+    <div>
+      <div className="row">
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span role="img" aria-label="chart" style={{ fontSize: 22 }}>📊</span>
+              Assets by Type
+            </div>
+            <div className="card-body">
+              {Object.keys(assetsByType).length === 0 ? (
+                <div className="text-muted" style={{ fontStyle: 'italic' }}>No assets to display. Add some assets to see the chart!</div>
+              ) : (
+                <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
+                  <Pie data={assetsData} />
+                </div>
+              )}
+            </div>
           </div>
-          <div className="card-body">
-            {Object.keys(assetsByType).length === 0 ? (
-              <div className="text-muted" style={{ fontStyle: 'italic' }}>No assets to display. Add some assets to see the chart!</div>
-            ) : (
-              <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
-                <Pie data={assetsData} />
-              </div>
-            )}
+        </div>
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span role="img" aria-label="chart" style={{ fontSize: 22 }}>💸</span>
+              Expenses by Category
+            </div>
+            <div className="card-body">
+              {Object.keys(transactionsByCategory.expenses).length === 0 ? (
+                <div className="text-muted" style={{ fontStyle: 'italic' }}>No expenses to display. Add some expenses to see the chart!</div>
+              ) : (
+                <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
+                  <Bar data={expensesData} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-      <div className="col-md-6">
-        <div className="card">
-          <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span role="img" aria-label="chart" style={{ fontSize: 22 }}>📊</span>
-            Expenses by Category
-          </div>
-          <div className="card-body">
-            {Object.keys(expensesByCategory).length === 0 ? (
-              <div className="text-muted" style={{ fontStyle: 'italic' }}>No expenses to display. Add some expenses to see the chart!</div>
-            ) : (
-              <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
-                <Bar data={expensesData} />
-              </div>
-            )}
+      <div className="row mt-4">
+        <div className="col-md-6">
+          <div className="card">
+            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span role="img" aria-label="chart" style={{ fontSize: 22 }}>💰</span>
+              Income by Category
+            </div>
+            <div className="card-body">
+              {Object.keys(transactionsByCategory.income).length === 0 ? (
+                <div className="text-muted" style={{ fontStyle: 'italic' }}>No income to display. Add some income to see the chart!</div>
+              ) : (
+                <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
+                  <Bar data={incomeData} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

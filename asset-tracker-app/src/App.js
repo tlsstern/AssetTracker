@@ -4,7 +4,7 @@ import { Route, Routes, Navigate, Link } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
-import Expenses from './components/Expenses';
+import Transactions from './components/Transactions';
 import DataOverview from './components/DataOverview';
 import MoneyAdd from './components/MoneyAdd';
 import Login from './components/Login';
@@ -17,7 +17,7 @@ function App() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [assets, setAssets] = useState([]);
-  const [expenses, setExpenses] = useState([]);
+  const [transactions, setTransactions] = useState([]);
   const [networth, setNetworth] = useState(0);
 
   const getAssets = useCallback(async () => {
@@ -26,10 +26,10 @@ function App() {
     setAssets(data || []);
   }, [session]);
 
-  const getExpenses = useCallback(async () => {
+  const getTransactions = useCallback(async () => {
     if (!session) return;
     const { data } = await supabase.from('expenses').select('*').eq('user_id', session.user.id);
-    setExpenses(data || []);
+    setTransactions(data || []);
   }, [session]);
 
   useEffect(() => {
@@ -50,9 +50,9 @@ function App() {
   useEffect(() => {
     if (session) {
       getAssets();
-      getExpenses();
+      getTransactions();
     }
-  }, [session, getAssets, getExpenses]);
+  }, [session, getAssets, getTransactions]);
 
   useEffect(() => {
     const calculateNetworth = () => {
@@ -82,22 +82,23 @@ function App() {
     }
   };
 
-  const addExpense = async (expense) => {
+  const addTransaction = async (transaction) => {
     const { data, error } = await supabase
       .from('expenses')
-      .insert([{ ...expense, user_id: session.user.id }])
+      .insert([{ ...transaction, user_id: session.user.id }])
       .select();
     if (error) {
-      console.error('Error adding expense:', error);
+      console.error('Error adding transaction:', error);
     } else {
-      if (expense.source_account) {
-        const account = assets.find(a => a.id === expense.source_account);
+      if (transaction.account_id) {
+        const account = assets.find(a => a.id === transaction.account_id);
         if (account) {
-          const updatedAccount = { ...account, value: account.value - expense.value };
-          await editAsset(assets.findIndex(a => a.id === expense.source_account), updatedAccount);
+          const valueChange = transaction.transaction_type === 'expense' ? -transaction.value : transaction.value;
+          const updatedAccount = { ...account, value: account.value + valueChange };
+          await editAsset(assets.findIndex(a => a.id === transaction.account_id), updatedAccount);
         }
       }
-      getExpenses();
+      getTransactions();
     }
   };
 
@@ -124,26 +125,26 @@ function App() {
     }
   };
 
-  const editExpense = async (index, updatedExpense) => {
-    const expenseToUpdate = expenses[index];
+  const editTransaction = async (index, updatedTransaction) => {
+    const transactionToUpdate = transactions[index];
     const { data, error } = await supabase
       .from('expenses')
-      .update(updatedExpense)
-      .eq('id', expenseToUpdate.id);
+      .update(updatedTransaction)
+      .eq('id', transactionToUpdate.id);
     if (error) {
-      console.error('Error updating expense:', error);
+      console.error('Error updating transaction:', error);
     } else {
-      getExpenses();
+      getTransactions();
     }
   };
 
-  const deleteExpense = async (index) => {
-    const expenseToDelete = expenses[index];
-    const { error } = await supabase.from('expenses').delete().eq('id', expenseToDelete.id);
+  const deleteTransaction = async (index) => {
+    const transactionToDelete = transactions[index];
+    const { error } = await supabase.from('expenses').delete().eq('id', transactionToDelete.id);
     if (error) {
-      console.error('Error deleting expense:', error);
+      console.error('Error deleting transaction:', error);
     } else {
-      getExpenses();
+      getTransactions();
     }
   };
 
@@ -183,9 +184,9 @@ function App() {
               <Navbar />
               <div className="container">
                 <Routes>
-                  <Route path="/" element={<Dashboard networth={networth} assets={assets} expenses={expenses} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
-                  <Route path="/expenses" element={<Expenses onAddExpense={addExpense} expenses={expenses} onEditExpense={editExpense} onDeleteExpense={deleteExpense} assets={assets} />} />
-                  <Route path="/overview" element={<DataOverview assets={assets} expenses={expenses} />} />
+                  <Route path="/" element={<Dashboard networth={networth} assets={assets} transactions={transactions} onEditAsset={editAsset} onDeleteAsset={deleteAsset} />} />
+                  <Route path="/transactions" element={<Transactions onAddTransaction={addTransaction} transactions={transactions} onEditTransaction={editTransaction} onDeleteTransaction={deleteTransaction} assets={assets} />} />
+                  <Route path="/overview" element={<DataOverview assets={assets} transactions={transactions} />} />
                   <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} onTransfer={handleTransfer} />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="*" element={<Navigate to="/" />} />

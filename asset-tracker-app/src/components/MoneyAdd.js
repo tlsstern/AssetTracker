@@ -109,8 +109,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
         assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), metal_type: metalType };
     } else if (assetType === 'bankAccount') {
       assetToAdd = { ...assetToAdd, currency, account_type: accountType };
-    } else if (assetType === 'card') {
-      assetToAdd = { ...assetToAdd, limit: parseFloat(limit) };
     } else if (assetType === 'salary') {
       assetToAdd = { ...assetToAdd, income: parseFloat(value), destination_account: destinationAccount };
     }
@@ -171,7 +169,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                   <option value="stock">Stock</option>
                   <option value="crypto">Cryptocurrency</option>
                   <option value="bankAccount">Bank Account</option>
-                  <option value="card">Card</option>
                   <option value="preciousMetal">Precious Metal</option>
                   <option value="salary">Salary</option>
                 </select>
@@ -256,11 +253,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                           ))}
                         </ul>
                       )}
-                      {searchQuery.length > 1 && searchResults.length === 0 && (
-                        <div className="text-muted position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', background: '#fff', borderRadius: 8, padding: 8, fontStyle: 'italic', border: 'none', marginBottom: 0 }}>
-                          No results found.
-                        </div>
-                      )}
                     </div>
                   </div>
                 ) : (
@@ -343,42 +335,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                       <option value="Checking">Checking</option>
                       <option value="Savings">Savings</option>
                     </select>
-                  </div>
-                </div>
-              </>
-            }
-            {assetType === 'card' &&
-              <>
-                <div className="row g-3 align-items-end mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Card Name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Balance"
-                      value={value}
-                      onChange={(e) => setValue(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Limit"
-                      value={limit}
-                      onChange={(e) => setLimit(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
                   </div>
                 </div>
               </>
