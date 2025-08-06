@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCHF } from '../utils/formatters';
 
 const TotalExpenses = ({ expenses }) => {
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.value, 0);
@@ -11,7 +12,7 @@ const TotalExpenses = ({ expenses }) => {
       </div>
       <div className="card-body">
         <h2 className="card-title" style={{ fontSize: 36, fontWeight: 500, color: '#212529', marginBottom: 0 }}>
-          CHF {totalExpenses.toFixed(2)}
+          {formatCHF(totalExpenses)}
         </h2>
       </div>
     </div>

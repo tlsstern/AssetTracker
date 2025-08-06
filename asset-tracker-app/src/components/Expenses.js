@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Card.css';
+import { formatCHF } from '../utils/formatters';
 
 const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, assets }) => {
   const [name, setName] = useState('');
@@ -167,7 +168,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
                       </div>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
-                          CHF {expense.value.toFixed(2)}
+                          {formatCHF(expense.value)}
                         </span>
                         <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, expense)}>Edit</button>
                         <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteExpense(index)}>Delete</button>

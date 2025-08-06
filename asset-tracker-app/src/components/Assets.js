@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { formatCHF, formatSwissNumber } from '../utils/formatters';
 
 const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
   const [editIndex, setEditIndex] = useState(null);
@@ -76,7 +77,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
         return (
           <>
             <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Limit: {asset.limit}</span>
+            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Limit: {formatSwissNumber(asset.limit)}</span>
           </>
         )
       case 'preciousMetal':
@@ -159,7 +160,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
-                        CHF {asset.value.toFixed(2)}
+                        {formatCHF(asset.value)}
                       </span>
                       <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, asset)}>
                         Edit

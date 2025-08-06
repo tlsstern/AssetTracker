@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Card.css';
+import { formatCHF } from '../utils/formatters';
 
 const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDeleteTransaction, assets }) => {
   const [name, setName] = useState('');
@@ -287,7 +288,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                             fontWeight: 600 
                           }}
                         >
-                          {transaction.transaction_type === 'expense' ? '-' : '+'} CHF {transaction.value.toFixed(2)}
+                          {transaction.transaction_type === 'expense' ? '-' : '+'} {formatCHF(transaction.value)}
                         </span>
                         <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, transaction)}>Edit</button>
                         <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteTransaction(index)}>Delete</button>

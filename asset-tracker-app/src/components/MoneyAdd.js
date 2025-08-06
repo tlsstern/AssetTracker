@@ -4,6 +4,7 @@ import PriceFetcher from './PriceFetcher';
 import Assets from './Assets';
 
 const FINNHUB_API_KEY = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
+const COINGECKO_API_KEY = 'CG-R4jRckRE4upFAG2hCZ1GBnzB';
 
 const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }) => {
   const [name, setName] = useState('');
@@ -23,9 +24,34 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   const [toAccount, setToAccount] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
   const [metalType, setMetalType] = useState('XAU');
+  const [cryptoList, setCryptoList] = useState([]);
+  const [selectedCrypto, setSelectedCrypto] = useState('');
+  const [loadingCryptos, setLoadingCryptos] = useState(false);
 
 
   const searchTimeoutRef = useRef(null);
+
+  // Fetch top 100 cryptocurrencies from CoinGecko
+  useEffect(() => {
+    const fetchCryptoList = async () => {
+      if (assetType === 'crypto' && cryptoList.length === 0) {
+        setLoadingCryptos(true);
+        try {
+          const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&x_cg_demo_api_key=${COINGECKO_API_KEY}`;
+          const response = await fetch(url);
+          if (response.ok) {
+            const data = await response.json();
+            setCryptoList(data);
+          }
+        } catch (error) {
+          console.error('Error fetching crypto list:', error);
+        } finally {
+          setLoadingCryptos(false);
+        }
+      }
+    };
+    fetchCryptoList();
+  }, [assetType, cryptoList.length]);
 
   useEffect(() => {
     if (assetType === 'preciousMetal') {
@@ -36,43 +62,36 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
         'XPD': 'Palladium'
       };
       setName(metalNameMap[metalType]);
+    } else if (assetType === 'crypto' && selectedCrypto) {
+      const crypto = cryptoList.find(c => c.id === selectedCrypto);
+      if (crypto) {
+        setName(crypto.name);
+        setSymbol(crypto.id);
+      }
     } else {
       // Reset name when switching away from precious metals, unless user has typed something
       if (!searchQuery && !symbol) {
          setName('');
       }
     }
-  }, [assetType, metalType, searchQuery, symbol]);
+  }, [assetType, metalType, searchQuery, symbol, selectedCrypto, cryptoList]);
 
 
   useEffect(() => {
-    if (searchQuery.length > 1 && (assetType === 'stock' || assetType === 'crypto')) {
+    if (searchQuery.length > 1 && assetType === 'stock') {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
       searchTimeoutRef.current = setTimeout(() => {
         const fetchSymbols = async () => {
-          let url = '';
-          if (assetType === 'stock') {
-            url = `https://finnhub.io/api/v1/search?q=${encodeURIComponent(searchQuery)}&token=${FINNHUB_API_KEY}`;
-          } else if (assetType === 'crypto') {
-            url = `https://finnhub.io/api/v1/crypto/symbol?exchange=US&token=${FINNHUB_API_KEY}`;
-          }
+          const url = `https://finnhub.io/api/v1/search?q=${encodeURIComponent(searchQuery)}&token=${FINNHUB_API_KEY}`;
           try {
             const response = await fetch(url);
             const data = await response.json();
-            if (assetType === 'stock') {
-              if (data.result && Array.isArray(data.result)) {
-                setSearchResults(data.result.filter(item => item.symbol && item.type !== 'ETF'));
-              } else {
-                setSearchResults([]);
-              }
-            } else if (assetType === 'crypto') {
-              if (Array.isArray(data)) {
-                setSearchResults(data.filter(item => item.symbol && item.symbol.toLowerCase().includes(searchQuery.toLowerCase())));
-              } else {
-                setSearchResults([]);
-              }
+            if (data.result && Array.isArray(data.result)) {
+              setSearchResults(data.result.filter(item => item.symbol && item.type !== 'ETF'));
+            } else {
+              setSearchResults([]);
             }
           } catch (error) {
             setSearchResults([]);
@@ -94,7 +113,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     let assetValue = parseFloat(value);
     let assetToAdd = { name, value: assetValue, type: assetType };
 
-    if (assetType === 'stock' || assetType === 'crypto') {
+    if (assetType === 'stock') {
       if (inputMode === 'quantity') {
         if (!name || !quantity || !fetchedPrice) return;
         assetValue = parseFloat(quantity) * fetchedPrice;
@@ -102,6 +121,18 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
       } else {
         if (!name || !value) return;
         assetToAdd = { ...assetToAdd, value: assetValue };
+      }
+    } else if (assetType === 'crypto') {
+      if (inputMode === 'quantity') {
+        if (!selectedCrypto || !quantity || !fetchedPrice) return;
+        assetValue = parseFloat(quantity) * fetchedPrice;
+        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity) };
+      } else {
+        if (!selectedCrypto || !value) return;
+        const crypto = cryptoList.find(c => c.id === selectedCrypto);
+        if (crypto) {
+          assetToAdd = { ...assetToAdd, name: crypto.name, value: assetValue };
+        }
       }
     } else if (assetType === 'preciousMetal') {
         if (!quantity || !fetchedPrice) return;
@@ -126,6 +157,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     setAccountType('Checking');
     setLimit('');
     setDestinationAccount('');
+    setSelectedCrypto('');
   };
 
   const handleTransferSubmit = (e) => {
@@ -174,7 +206,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                 </select>
               </div>
             </div>
-            {(assetType === 'stock' || assetType === 'crypto') &&
+            {assetType === 'stock' &&
               <>
                 <div className="row g-3 align-items-end mb-3">
                   <div className="col">
@@ -262,6 +294,86 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                         type="number"
                         className="form-control"
                         placeholder="Value"
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        style={{ borderRadius: 8, border: 'none' }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
+            }
+            {assetType === 'crypto' &&
+              <>
+                <div className="row g-3 align-items-end mb-3">
+                  <div className="col">
+                    <select 
+                      className="form-control" 
+                      value={selectedCrypto} 
+                      onChange={(e) => setSelectedCrypto(e.target.value)} 
+                      style={{ borderRadius: 8, border: 'none' }}
+                      disabled={loadingCryptos}
+                    >
+                      <option value="">
+                        {loadingCryptos ? 'Loading cryptocurrencies...' : 'Select Cryptocurrency'}
+                      </option>
+                      {cryptoList.map((crypto) => (
+                        <option key={crypto.id} value={crypto.id}>
+                          {crypto.market_cap_rank}. {crypto.name} ({crypto.symbol.toUpperCase()})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="col">
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inputModeOptions"
+                        id="quantityMode"
+                        value="quantity"
+                        checked={inputMode === 'quantity'}
+                        onChange={() => setInputMode('quantity')}
+                      />
+                      <label className="form-check-label" htmlFor="quantityMode">Quantity</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="inputModeOptions"
+                        id="valueMode"
+                        value="value"
+                        checked={inputMode === 'value'}
+                        onChange={() => setInputMode('value')}
+                      />
+                      <label className="form-check-label" htmlFor="valueMode">Value</label>
+                    </div>
+                  </div>
+                </div>
+
+                {inputMode === 'quantity' ? (
+                  <div className="row g-3 mb-3">
+                    <div className="col">
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="Quantity"
+                        value={quantity}
+                        onChange={(e) => setQuantity(e.target.value)}
+                        min="0.00000001"
+                        step="0.00000001"
+                        style={{ borderRadius: 8, border: 'none' }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row g-3 mb-3">
+                    <div className="col">
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="Value (CHF)"
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
                         style={{ borderRadius: 8, border: 'none' }}
@@ -381,10 +493,20 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
               </div>
             </div>
           </form>
-          {symbol && (assetType === 'stock' || assetType === 'crypto') && inputMode === 'quantity' && (
+          {symbol && assetType === 'stock' && inputMode === 'quantity' && (
             <div className="mt-3">
               <PriceFetcher 
                 symbol={symbol} 
+                type={assetType} 
+                onPriceFetched={handlePriceFetched}
+                quantity={quantity || 1}
+              />
+            </div>
+          )}
+          {selectedCrypto && assetType === 'crypto' && inputMode === 'quantity' && (
+            <div className="mt-3">
+              <PriceFetcher 
+                symbol={selectedCrypto} 
                 type={assetType} 
                 onPriceFetched={handlePriceFetched}
                 quantity={quantity || 1}

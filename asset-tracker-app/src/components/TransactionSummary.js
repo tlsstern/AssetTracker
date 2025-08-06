@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatCHF } from '../utils/formatters';
 
 const TransactionSummary = ({ transactions }) => {
   const totalExpenses = transactions
@@ -24,7 +25,7 @@ const TransactionSummary = ({ transactions }) => {
           color: netFlow >= 0 ? '#28a745' : '#dc3545', 
           marginBottom: 0 
         }}>
-          CHF {Math.abs(netFlow).toFixed(2)}
+          {netFlow >= 0 ? '' : '-'}{formatCHF(Math.abs(netFlow))}
         </h2>
       </div>
     </div>
