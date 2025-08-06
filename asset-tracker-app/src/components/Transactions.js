@@ -208,7 +208,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
         </div>
       </div>
 
-      <div className="card mt-4">
+      <div className="card mt-4 transactions-list-card">
         <div className="card-header">Transactions List</div>
         <div className="card-body">
           {transactions.length === 0 ? (

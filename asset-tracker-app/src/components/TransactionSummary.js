@@ -14,8 +14,7 @@ const TransactionSummary = ({ transactions }) => {
 
   return (
     <div className="card text-center">
-      <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-        <span role="img" aria-label="net flow" style={{ fontSize: 22 }}>💵</span>
+      <div className="card-header">
         Net Flow
       </div>
       <div className="card-body">

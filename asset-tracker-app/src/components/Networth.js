@@ -4,8 +4,7 @@ import { formatCHF } from '../utils/formatters';
 const Networth = ({ networth }) => {
   return (
     <div className="card text-center">
-      <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-        <span role="img" aria-label="networth" style={{ fontSize: 22 }}>💼</span>
+      <div className="card-header">
         Net Worth
       </div>
       <div className="card-body">

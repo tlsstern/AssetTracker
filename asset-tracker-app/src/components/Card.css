@@ -24,3 +24,8 @@
 .card-body {
   font-size: 1.05rem;
 }
+
+/* Reduced hover effect for transactions list */
+.transactions-list-card:hover {
+  transform: translateY(-1px) scale(1.005);
+}
