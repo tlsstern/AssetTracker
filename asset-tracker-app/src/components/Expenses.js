@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Card.css';
 import { formatCHF } from '../utils/formatters';
+import { Icons } from './Icons';
 
 const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, assets }) => {
   const [name, setName] = useState('');
@@ -47,21 +48,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
     setEditIndex(null);
   };
 
-  const buttonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: '#687FE5',
-    color: '#F3E2D4',
-    border: 'none',
-  };
-
-  const outlineButtonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: 'transparent',
-    color: '#687FE5',
-    border: '1px solid #687FE5',
-  };
+  // Button styles are now handled by CSS classes
 
 
   return (
@@ -118,14 +105,14 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
                 </select>
               </div>
               <div className="col-auto">
-                <button type="submit" className="btn" style={buttonStyle}>Add Expense</button>
+                <button type="submit" className="btn btn-primary">Add Expense</button>
               </div>
             </div>
           </form>
         </div>
       </div>
 
-      <div className="card mt-4">
+      <div className="card mt-4 expenses-list-card">
         <div className="card-header">Expenses List</div>
         <div className="card-body">
           {expenses.length === 0 ? (
@@ -137,7 +124,7 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
                   {editIndex === index ? (
                     <>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
-                        <span role="img" aria-label="expense" style={{ fontSize: 20, marginRight: 8 }}>💸</span>
+                        <span style={{ marginRight: 8, color: '#ef4444' }}>{Icons.expense}</span>
                         <input type="text" name="name" value={editData.name} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Name" />
                         <input type="number" name="value" value={editData.value} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Value" style={{ width: '100px' }} />
                         <input type="date" name="date" value={editData.date} onChange={handleEditChange} className="form-control form-control-sm" />
@@ -150,14 +137,14 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
                         </select>
                       </span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>Save</button>
-                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>Cancel</button>
+                        <button className="btn btn-sm btn-primary" onClick={() => saveEdit(index)}>Save</button>
+                        <button className="btn btn-sm btn-outline" onClick={() => setEditIndex(null)}>Cancel</button>
                       </span>
                     </>
                   ) : (
                     <>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span role="img" aria-label="expense" style={{ fontSize: 20, marginRight: 8 }}>💸</span>
+                        <span style={{ marginRight: 8, color: '#ef4444' }}>{Icons.expense}</span>
                         <div>
                           <span style={{ fontWeight: 500 }}>{expense.name}</span>
                           <div>
@@ -167,11 +154,11 @@ const Expenses = ({ onAddExpense, expenses, onEditExpense, onDeleteExpense, asse
                         </div>
                       </div>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
+                        <span className="badge rounded-pill badge-danger">
                           {formatCHF(expense.value)}
                         </span>
-                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, expense)}>Edit</button>
-                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteExpense(index)}>Delete</button>
+                        <button className="btn btn-sm btn-outline" onClick={() => startEdit(index, expense)}>Edit</button>
+                        <button className="btn btn-sm btn-outline" onClick={() => onDeleteExpense(index)}>Delete</button>
                       </span>
                     </>
                   )}

@@ -177,20 +177,12 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     setSearchQuery(selectedSymbol);
   };
 
-  const buttonStyle = {
-    borderRadius: 8,
-    padding: '8px 20px',
-    fontWeight: 600,
-    background: '#687FE5',
-    color: '#F3E2D4',
-    border: 'none',
-  };
+  // Button styles are now handled by CSS classes
 
   return (
     <div>
       <div className="card">
-        <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span role="img" aria-label="add" style={{ fontSize: 22 }}>➕</span>
+        <div className="card-header">
           Manage Assets
         </div>
         <div className="card-body">
@@ -489,7 +481,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
 
             <div className="row g-3 mb-3">
               <div className="col-auto">
-                <button type="submit" className="btn" style={buttonStyle}>Add Asset</button>
+                <button type="submit" className="btn btn-primary">Add Asset</button>
               </div>
             </div>
           </form>
@@ -557,7 +549,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                 />
               </div>
               <div className="col-auto">
-                <button type="submit" className="btn" style={buttonStyle}>Transfer</button>
+                <button type="submit" className="btn btn-primary">Transfer</button>
               </div>
             </div>
           </form>
