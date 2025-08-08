@@ -33,17 +33,17 @@ function Homepage() {
         </div>
         <div className="hero-visual">
           <div className="floating-card card-1">
-            <div className="card-icon"></div>
+            <div className="card-icon">📈</div>
             <h3>$125,430</h3>
             <p>Total Assets</p>
           </div>
           <div className="floating-card card-2">
-            <div className="card-icon"></div>
+            <div className="card-icon">💰</div>
             <h3>+12.5%</h3>
             <p>Monthly Growth</p>
           </div>
           <div className="floating-card card-3">
-            <div className="card-icon"></div>
+            <div className="card-icon">🎯</div>
             <h3>8 Assets</h3>
             <p>Tracked</p>
           </div>
@@ -55,32 +55,32 @@ function Homepage() {
           <h2 className="features-title">Everything You Need to Manage Your Wealth</h2>
           <div className="features-grid">
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">📊</div>
               <h3>Real-Time Tracking</h3>
               <p>Monitor your assets with live price updates for stocks, crypto, and more.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">💳</div>
               <h3>Expense Management</h3>
               <p>Track income and expenses across multiple accounts with detailed categorization.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">📈</div>
               <h3>Visual Analytics</h3>
               <p>Beautiful charts and insights to understand your financial growth patterns.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">🔐</div>
               <h3>Secure & Private</h3>
               <p>Bank-level security with encrypted data storage and secure authentication.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">🚀</div>
               <h3>Portfolio Insights</h3>
               <p>Get intelligent insights about your portfolio diversification and performance.</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon"></div>
+              <div className="feature-icon">📱</div>
               <h3>Access Anywhere</h3>
               <p>Responsive design works seamlessly on desktop, tablet, and mobile devices.</p>
             </div>
