@@ -83,7 +83,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
       <div className="add-transaction-form">
         <div className="form-header">Add Transaction</div>
         <form onSubmit={handleSubmit}>
-          <div className="form-row">
+          <div className="form-row-top">
             <select 
               className="form-select" 
               value={transactionType} 
@@ -131,12 +131,14 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
               onChange={(e) => setDate(e.target.value)} 
               required 
             />
+          </div>
+          <div className="form-row-bottom">
             <select 
               className="form-select" 
               value={account} 
               onChange={(e) => setAccount(e.target.value)}
             >
-              <option value="">Select Account</option>
+              <option value="">Select Account (Optional)</option>
               {assets.filter(asset => asset.type === 'bankAccount').map(account => (
                 <option key={account.id} value={account.id}>{account.name}</option>
               ))}
@@ -158,6 +160,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                 className="form-select" 
                 value={recurringFrequency} 
                 onChange={(e) => setRecurringFrequency(e.target.value)}
+                style={{ maxWidth: '150px' }}
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>

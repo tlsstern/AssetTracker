@@ -23,14 +23,29 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 1rem;
+  align-items: center;
+}
+
+.form-row-top {
+  display: grid;
+  grid-template-columns: 120px 2fr 150px 1fr 150px;
+  gap: 1rem;
   margin-bottom: 1rem;
+  align-items: center;
+}
+
+.form-row-bottom {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 1rem;
+  align-items: center;
 }
 
 .form-input, .form-select {
   padding: 0.75rem;
   border: 2px solid #e2e8f0;
   border-radius: 10px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   background: white;
   width: 100%;
@@ -46,6 +61,8 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .form-checkbox {
@@ -63,13 +80,15 @@
 .btn-add-transaction {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 10px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-add-transaction:hover {
@@ -286,9 +305,30 @@
   font-style: italic;
 }
 
+@media (max-width: 1200px) {
+  .form-row-top {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .form-row-bottom {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .btn-add-transaction {
+    grid-column: span 2;
+  }
+}
+
 @media (max-width: 768px) {
-  .form-row {
-    grid-template-columns: 1fr;
+  .form-row-top,
+  .form-row-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .form-input, .form-select, .btn-add-transaction {
+    width: 100%;
   }
 
   .transaction-item {
