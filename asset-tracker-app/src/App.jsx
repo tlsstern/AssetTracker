@@ -145,13 +145,6 @@ function App() {
       .insert([{ ...asset, user_id: session.user.id }])
       .select();
     if (!error) {
-      if (asset.type === 'salary' && asset.destination_account) {
-        const account = assets.find(a => a.id === asset.destination_account);
-        if (account) {
-          const updatedAccount = { ...account, value: account.value + asset.income };
-          await editAsset(assets.findIndex(a => a.id === asset.destination_account), updatedAccount);
-        }
-      }
       getAssets();
     }
   };

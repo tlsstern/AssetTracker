@@ -81,13 +81,6 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
             {asset.quantity && <Badge>({asset.quantity}g)</Badge>}
           </>
         );
-      case 'salary':
-        return (
-          <>
-            <AssetName />
-            <Badge>Monthly</Badge>
-          </>
-        );
       default:
         return <AssetName />;
     }

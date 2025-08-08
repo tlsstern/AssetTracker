@@ -20,7 +20,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   const [fetchedPrice, setFetchedPrice] = useState(null);
   const [accountType, setAccountType] = useState('Checking');
   const [limit, setLimit] = useState('');
-  const [destinationAccount, setDestinationAccount] = useState('');
   const [fromAccount, setFromAccount] = useState('');
   const [toAccount, setToAccount] = useState('');
   const [transferAmount, setTransferAmount] = useState('');
@@ -172,7 +171,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     setFetchedPrice(null);
     setAccountType('Checking');
     setLimit('');
-    setDestinationAccount('');
     setSelectedCrypto('');
     setCryptoSearch('');
     setShowCryptoDropdown(false);
@@ -610,41 +608,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                     >
                       <option value="Checking">Checking</option>
                       <option value="Savings">Savings</option>
-                    </select>
-                  </div>
-                </div>
-              </>
-            }
-
-            {assetType === 'salary' &&
-              <>
-                <div className="row g-3 align-items-end mb-3">
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Job Title"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Monthly Income"
-                      value={value}
-                      onChange={(e) => setValue(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
-                  </div>
-                  <div className="col">
-                    <select className="form-control" value={destinationAccount} onChange={(e) => setDestinationAccount(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
-                      <option value="">Select Account</option>
-                      {assets.filter(asset => asset.type === 'bankAccount').map(account => (
-                        <option key={account.id} value={account.id}>{account.name}</option>
-                      ))}
                     </select>
                   </div>
                 </div>
