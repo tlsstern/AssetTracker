@@ -5,13 +5,26 @@ import { Chart, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElem
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
 const DataOverview = ({ assets, transactions }) => {
+  // Format asset type names for display
+  const formatAssetType = (type) => {
+    const typeMap = {
+      'stock': 'Stocks',
+      'crypto': 'Cryptocurrency',
+      'bankAccount': 'Bank Accounts',
+      'preciousMetal': 'Precious Metals',
+      'card': 'Credit Cards'
+    };
+    return typeMap[type] || type;
+  };
+
   const getAssetsByType = () => {
     const assetsByType = {};
     assets.forEach(asset => {
-      if (assetsByType[asset.type]) {
-        assetsByType[asset.type] += asset.value;
+      const formattedType = formatAssetType(asset.type);
+      if (assetsByType[formattedType]) {
+        assetsByType[formattedType] += asset.value;
       } else {
-        assetsByType[asset.type] = asset.value;
+        assetsByType[formattedType] = asset.value;
       }
     });
     return assetsByType;
@@ -89,8 +102,7 @@ const DataOverview = ({ assets, transactions }) => {
       <div className="row">
         <div className="col-md-6">
           <div className="card">
-            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span role="img" aria-label="chart" style={{ fontSize: 22 }}>📊</span>
+            <div className="card-header">
               Assets by Type
             </div>
             <div className="card-body">
@@ -106,8 +118,7 @@ const DataOverview = ({ assets, transactions }) => {
         </div>
         <div className="col-md-6">
           <div className="card">
-            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span role="img" aria-label="chart" style={{ fontSize: 22 }}>💸</span>
+            <div className="card-header">
               Expenses by Category
             </div>
             <div className="card-body">
@@ -125,8 +136,7 @@ const DataOverview = ({ assets, transactions }) => {
       <div className="row mt-4">
         <div className="col-md-6">
           <div className="card">
-            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span role="img" aria-label="chart" style={{ fontSize: 22 }}>💰</span>
+            <div className="card-header">
               Income by Category
             </div>
             <div className="card-body">
