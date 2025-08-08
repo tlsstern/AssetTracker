@@ -1,10 +1,25 @@
 .settings-wrapper {
-  max-width: 500px;
+  width: 100%;
+  max-width: 600px;
   margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .settings-wrapper .card {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
   text-align: center;
+}
+
+.settings-wrapper .card-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f7fafc;
 }
 
 .settings-wrapper .form-message {
@@ -29,18 +44,26 @@
 
 .settings-wrapper .settings-btn {
   width: 100%;
-  background-color: #687FE5;
-  color: #F3E2D4;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   font-weight: 600;
   border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .settings-wrapper .settings-btn:hover {
-  background-color: #52758a;
-  color: #F3E2D4;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
 }
 
 .settings-wrapper .delete-account {
-    background-color: #e54848;
-    border-color: #e54848;
+  background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+  border: none;
+}
+
+.settings-wrapper .delete-account:hover {
+  box-shadow: 0 10px 30px rgba(245, 101, 101, 0.4);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pie, Bar } from 'react-chartjs-2';
-import './Card.css';
+import './DataOverview.css';
 import { Chart, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
@@ -97,58 +97,132 @@ const DataOverview = ({ assets, transactions }) => {
     ],
   };
 
+  // Calculate portfolio insights and tips
+  const getPortfolioInsights = () => {
+    const totalValue = assets.reduce((sum, asset) => sum + asset.value, 0);
+    const totalExpenses = Object.values(transactionsByCategory.expenses).reduce((sum, val) => sum + val, 0);
+    const totalIncome = Object.values(transactionsByCategory.income).reduce((sum, val) => sum + val, 0);
+    const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpenses) / totalIncome * 100) : 0;
+    
+    // Asset diversity score (0-100)
+    const assetTypes = Object.keys(assetsByType).length;
+    const diversityScore = Math.min(100, assetTypes * 20);
+    
+    // Risk assessment
+    const highRiskValue = assets
+      .filter(a => a.type === 'crypto' || a.type === 'stock')
+      .reduce((sum, a) => sum + a.value, 0);
+    const riskRatio = totalValue > 0 ? (highRiskValue / totalValue * 100) : 0;
+    
+    // Monthly average
+    const monthlyAvg = transactions.length > 0 ? 
+      (totalExpenses / Math.max(1, new Set(transactions.map(t => t.date?.substring(0, 7))).size)) : 0;
+
+    return {
+      labels: ['Savings Rate %', 'Diversity Score', 'Risk Level %', 'Monthly Avg Expense'],
+      data: [
+        Math.round(savingsRate),
+        diversityScore,
+        Math.round(riskRatio),
+        Math.round(monthlyAvg)
+      ]
+    };
+  };
+
+  const insights = getPortfolioInsights();
+  const insightsData = {
+    labels: insights.labels,
+    datasets: [
+      {
+        label: 'Portfolio Health Metrics',
+        data: insights.data,
+        backgroundColor: [
+          'rgba(139, 92, 246, 0.2)',
+          'rgba(236, 72, 153, 0.2)',
+          'rgba(251, 146, 60, 0.2)',
+          'rgba(14, 165, 233, 0.2)'
+        ],
+        borderColor: [
+          'rgba(139, 92, 246, 1)',
+          'rgba(236, 72, 153, 1)',
+          'rgba(251, 146, 60, 1)',
+          'rgba(14, 165, 233, 1)'
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
-    <div>
-      <div className="row">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              Assets by Type
+    <div className="data-overview-container">
+      <div className="chart-grid">
+        <div className="chart-container">
+          <div className="chart-title">Assets by Type</div>
+          {Object.keys(assetsByType).length === 0 ? (
+            <div className="no-data">No assets to display. Add some assets to see the chart!</div>
+          ) : (
+            <div className="chart-wrapper">
+              <Pie data={assetsData} />
             </div>
-            <div className="card-body">
-              {Object.keys(assetsByType).length === 0 ? (
-                <div className="text-muted" style={{ fontStyle: 'italic' }}>No assets to display. Add some assets to see the chart!</div>
-              ) : (
-                <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
-                  <Pie data={assetsData} />
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              Expenses by Category
+        
+        <div className="chart-container">
+          <div className="chart-title">Expenses by Category</div>
+          {Object.keys(transactionsByCategory.expenses).length === 0 ? (
+            <div className="no-data">No expenses to display. Add some expenses to see the chart!</div>
+          ) : (
+            <div className="chart-wrapper">
+              <Bar data={expensesData} />
             </div>
-            <div className="card-body">
-              {Object.keys(transactionsByCategory.expenses).length === 0 ? (
-                <div className="text-muted" style={{ fontStyle: 'italic' }}>No expenses to display. Add some expenses to see the chart!</div>
-              ) : (
-                <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
-                  <Bar data={expensesData} />
-                </div>
-              )}
-            </div>
-          </div>
+          )}
         </div>
       </div>
-      <div className="row mt-4">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              Income by Category
+      
+      <div className="chart-grid bottom-row">
+        <div className="chart-container">
+          <div className="chart-title">Income by Category</div>
+          {Object.keys(transactionsByCategory.income).length === 0 ? (
+            <div className="no-data">No income to display. Add some income to see the chart!</div>
+          ) : (
+            <div className="chart-wrapper">
+              <Bar data={incomeData} />
             </div>
-            <div className="card-body">
-              {Object.keys(transactionsByCategory.income).length === 0 ? (
-                <div className="text-muted" style={{ fontStyle: 'italic' }}>No income to display. Add some income to see the chart!</div>
-              ) : (
-                <div style={{ height: '400px', background: 'rgba(99,102,241,0.04)', borderRadius: 18, boxShadow: '0 2px 8px rgba(99,102,241,0.06)', padding: 16 }}>
-                  <Bar data={incomeData} />
-                </div>
-              )}
+          )}
+        </div>
+        
+        <div className="chart-container">
+          <div className="chart-title">Portfolio Health Insights</div>
+          {assets.length === 0 && transactions.length === 0 ? (
+            <div className="no-data">Add assets and transactions to see portfolio insights!</div>
+          ) : (
+            <div className="chart-wrapper">
+              <Bar 
+                data={insightsData}
+                options={{
+                  plugins: {
+                    tooltip: {
+                      callbacks: {
+                        label: (context) => {
+                          const label = context.label;
+                          const value = context.raw;
+                          if (label.includes('%')) return `${value}%`;
+                          if (label.includes('Monthly')) return `CHF ${value.toLocaleString()}`;
+                          return `Score: ${value}/100`;
+                        }
+                      }
+                    }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      max: 100
+                    }
+                  }
+                }}
+              />
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

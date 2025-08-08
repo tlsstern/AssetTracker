@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import './MoneyAdd.css';
 import './Card.css';
 import PriceFetcher from './PriceFetcher.jsx';
 import Assets from './Assets.jsx';
@@ -203,11 +204,10 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   };
 
   return (
-    <div>
-      <div className="card">
-        <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span role="img" aria-label="add" style={{ fontSize: 22 }}>➕</span>
-          Manage Assets
+    <div className="money-add-container">
+      <div className="add-asset-form">
+        <div className="section-header">
+          Add New Asset
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
@@ -652,9 +652,9 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
           )}
         </div>
       </div>
-      <div className="card mt-4">
-        <div className="card-header">Transfer Money</div>
-        <div className="card-body">
+      
+      <div className="transfer-section">
+        <div className="section-header">Transfer Between Accounts</div>
           <form onSubmit={handleTransferSubmit}>
             <div className="row g-3 align-items-end">
               <div className="col">
@@ -688,9 +688,12 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
               </div>
             </div>
           </form>
-        </div>
       </div>
-      <Assets assets={assets} onEditAsset={onEditAsset} onDeleteAsset={onDeleteAsset} />
+      
+      <div className="assets-list-section">
+        <div className="section-header">Your Assets</div>
+        <Assets assets={assets} onEditAsset={onEditAsset} onDeleteAsset={onDeleteAsset} />
+      </div>
     </div>
   );
 };
