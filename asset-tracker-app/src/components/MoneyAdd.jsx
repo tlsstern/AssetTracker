@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Card.css';
 import PriceFetcher from './PriceFetcher.jsx';
 import Assets from './Assets.jsx';
+import SearchableDropdown from './SearchableDropdown.jsx';
 import { buttonStyles } from '../constants/styles';
 
 const FINNHUB_API_KEY = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
@@ -17,7 +18,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   const [searchQuery, setSearchQuery] = useState('');
   const [inputMode, setInputMode] = useState('quantity');
   const [fetchedPrice, setFetchedPrice] = useState(null);
-  const [currency, setCurrency] = useState('CHF');
   const [accountType, setAccountType] = useState('Checking');
   const [limit, setLimit] = useState('');
   const [destinationAccount, setDestinationAccount] = useState('');
@@ -27,10 +27,13 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
   const [metalType, setMetalType] = useState('XAU');
   const [cryptoList, setCryptoList] = useState([]);
   const [selectedCrypto, setSelectedCrypto] = useState('');
+  const [cryptoSearch, setCryptoSearch] = useState('');
+  const [showCryptoDropdown, setShowCryptoDropdown] = useState(false);
   const [loadingCryptos, setLoadingCryptos] = useState(false);
 
 
   const searchTimeoutRef = useRef(null);
+  const cryptoDropdownRef = useRef(null);
 
   // Fetch top 100 cryptocurrencies from CoinGecko
   useEffect(() => {
@@ -52,6 +55,18 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     };
     fetchCryptoList();
   }, [assetType, cryptoList.length]);
+
+  // Close crypto dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cryptoDropdownRef.current && !cryptoDropdownRef.current.contains(event.target)) {
+        setShowCryptoDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (assetType === 'preciousMetal') {
@@ -139,7 +154,7 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
         assetValue = parseFloat(quantity) * fetchedPrice;
         assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), metal_type: metalType };
     } else if (assetType === 'bankAccount') {
-      assetToAdd = { ...assetToAdd, currency, account_type: accountType };
+      assetToAdd = { ...assetToAdd, currency: 'CHF', account_type: accountType };
     } else if (assetType === 'salary') {
       assetToAdd = { ...assetToAdd, income: parseFloat(value), destination_account: destinationAccount };
     }
@@ -153,11 +168,12 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
     setSearchQuery('');
     setSearchResults([]);
     setFetchedPrice(null);
-    setCurrency('CHF');
     setAccountType('Checking');
     setLimit('');
     setDestinationAccount('');
     setSelectedCrypto('');
+    setCryptoSearch('');
+    setShowCryptoDropdown(false);
   };
 
   const handleTransferSubmit = (e) => {
@@ -209,94 +225,131 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
             {assetType === 'stock' &&
               <>
                 <div className="row g-3 align-items-end mb-3">
-                  <div className="col">
+                  <div className="col-md-6">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Stock Name</label>
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Asset Name"
+                      placeholder="Stock name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
+                      style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                     />
                   </div>
-                  <div className="col">
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="inputModeOptions"
-                        id="quantityMode"
-                        value="quantity"
-                        checked={inputMode === 'quantity'}
-                        onChange={() => setInputMode('quantity')}
-                      />
-                      <label className="form-check-label" htmlFor="quantityMode">Quantity</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="inputModeOptions"
-                        id="valueMode"
-                        value="value"
-                        checked={inputMode === 'value'}
-                        onChange={() => setInputMode('value')}
-                      />
-                      <label className="form-check-label" htmlFor="valueMode">Value</label>
+                  <div className="col-md-6">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Input Method</label>
+                    <div className="btn-group w-100" role="group">
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{
+                          borderRadius: '8px 0 0 8px',
+                          backgroundColor: inputMode === 'quantity' ? '#687FE5' : '#f8f9fa',
+                          color: inputMode === 'quantity' ? '#F3E2D4' : '#666',
+                          border: 'none',
+                          padding: '8px 16px'
+                        }}
+                        onClick={() => setInputMode('quantity')}
+                      >
+                        By Quantity
+                      </button>
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{
+                          borderRadius: '0 8px 8px 0',
+                          backgroundColor: inputMode === 'value' ? '#687FE5' : '#f8f9fa',
+                          color: inputMode === 'value' ? '#F3E2D4' : '#666',
+                          border: 'none',
+                          padding: '8px 16px'
+                        }}
+                        onClick={() => setInputMode('value')}
+                      >
+                        By Value
+                      </button>
                     </div>
                   </div>
                 </div>
 
                 {inputMode === 'quantity' ? (
                   <div className="row g-3 mb-3">
-                    <div className="col">
+                    <div className="col-md-6">
+                      <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Number of Shares</label>
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Quantity"
+                        placeholder="0"
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                         min="0.01"
                         step="0.01"
-                        style={{ borderRadius: 8, border: 'none' }}
+                        style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                       />
                     </div>
-                    <div className="col position-relative">
+                    <div className="col-md-6 position-relative">
+                      <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Stock Symbol</label>
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Search Symbol"
+                        placeholder="Search stock symbol"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        style={{ borderRadius: 8, border: 'none', marginBottom: 0 }}
+                        style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                       />
                       {searchResults.length > 0 && (
-                        <ul className="list-group position-absolute" style={{ zIndex: 1050, width: '100%', top: '110%', maxHeight: 220, overflowY: 'auto', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', border: 'none', background: '#fff', marginBottom: 0 }}>
+                        <div className="position-absolute" style={{ 
+                          zIndex: 1050, 
+                          width: '100%', 
+                          top: 'calc(100% + 4px)', 
+                          maxHeight: 280, 
+                          overflowY: 'auto', 
+                          boxShadow: '0 4px 16px rgba(0,0,0,0.12)', 
+                          borderRadius: 8,
+                          background: '#fff'
+                        }}>
                           {searchResults.map((match, idx) => (
-                            <li
+                            <div
                               key={match.symbol + idx}
-                              className="list-group-item list-group-item-action"
+                              className="px-3 py-2"
                               onClick={() => handleSymbolSelect(match.symbol, match.description || match.displaySymbol || match.symbol)}
-                              style={{ cursor: 'pointer', borderRadius: 8, marginBottom: 4, background: '#fff' }}
+                              style={{ 
+                                cursor: 'pointer', 
+                                borderBottom: idx < searchResults.length - 1 ? '1px solid #f0f0f0' : 'none',
+                                fontSize: '14px'
+                              }}
+                              onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                              onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                             >
-                              <span role="img" aria-label="search" style={{ fontSize: 16, marginRight: 6 }}>🔍</span>
-                              {match.symbol} - {match.description || match.displaySymbol || match.symbol} {match.type ? `(${match.type})` : ''}
-                            </li>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                  <strong>{match.symbol}</strong>
+                                  <div className="text-muted" style={{ fontSize: '12px' }}>
+                                    {match.description || match.displaySymbol || match.symbol}
+                                  </div>
+                                </div>
+                                {match.type && (
+                                  <span className="badge bg-light text-secondary" style={{ fontSize: '11px' }}>
+                                    {match.type}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           ))}
-                        </ul>
+                        </div>
                       )}
                     </div>
                   </div>
                 ) : (
                   <div className="row g-3 mb-3">
-                    <div className="col">
+                    <div className="col-md-6">
+                      <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Total Value (CHF)</label>
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Value"
+                        placeholder="0.00"
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
-                        style={{ borderRadius: 8, border: 'none' }}
+                        style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                       />
                     </div>
                   </div>
@@ -307,22 +360,107 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
               <>
                 <div className="row g-3 align-items-end mb-3">
                   <div className="col">
-                    <select 
-                      className="form-control" 
-                      value={selectedCrypto} 
-                      onChange={(e) => setSelectedCrypto(e.target.value)} 
-                      style={{ borderRadius: 8, border: 'none' }}
-                      disabled={loadingCryptos}
-                    >
-                      <option value="">
-                        {loadingCryptos ? 'Loading cryptocurrencies...' : 'Select Cryptocurrency'}
-                      </option>
-                      {cryptoList.map((crypto) => (
-                        <option key={crypto.id} value={crypto.id}>
-                          {crypto.market_cap_rank}. {crypto.name} ({crypto.symbol.toUpperCase()})
-                        </option>
-                      ))}
-                    </select>
+                    <div className="position-relative" ref={cryptoDropdownRef}>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder={loadingCryptos ? "Loading cryptocurrencies..." : "Search cryptocurrency by name or symbol..."}
+                        value={cryptoSearch}
+                        onChange={(e) => {
+                          setCryptoSearch(e.target.value);
+                          setShowCryptoDropdown(true);
+                        }}
+                        onFocus={() => setShowCryptoDropdown(true)}
+                        disabled={loadingCryptos}
+                        style={{ borderRadius: 8, border: 'none', paddingRight: selectedCrypto ? '100px' : '12px' }}
+                      />
+                      {selectedCrypto && (
+                        <button
+                          type="button"
+                          className="btn btn-sm"
+                          style={{
+                            position: 'absolute',
+                            right: '8px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            padding: '4px 8px',
+                            fontSize: '12px',
+                            borderRadius: 6,
+                            background: '#e0e0e0',
+                            border: 'none'
+                          }}
+                          onClick={() => {
+                            setSelectedCrypto('');
+                            setCryptoSearch('');
+                            setName('');
+                            setSymbol('');
+                          }}
+                        >
+                          Clear
+                        </button>
+                      )}
+                      {showCryptoDropdown && cryptoSearch && !loadingCryptos && (
+                        <div
+                          className="position-absolute"
+                          style={{
+                            top: '100%',
+                            left: 0,
+                            right: 0,
+                            maxHeight: '300px',
+                            overflowY: 'auto',
+                            backgroundColor: 'white',
+                            borderRadius: 8,
+                            boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                            zIndex: 1050,
+                            marginTop: 4
+                          }}
+                        >
+                          {cryptoList
+                            .filter(crypto => 
+                              crypto.name.toLowerCase().includes(cryptoSearch.toLowerCase()) ||
+                              crypto.symbol.toLowerCase().includes(cryptoSearch.toLowerCase())
+                            )
+                            .slice(0, 10)
+                            .map((crypto) => (
+                              <div
+                                key={crypto.id}
+                                className="px-3 py-2"
+                                style={{
+                                  cursor: 'pointer',
+                                  borderBottom: '1px solid #f0f0f0',
+                                  fontSize: '14px'
+                                }}
+                                onClick={() => {
+                                  setSelectedCrypto(crypto.id);
+                                  setCryptoSearch(`${crypto.name} (${crypto.symbol.toUpperCase()})`);
+                                  setShowCryptoDropdown(false);
+                                  setName(crypto.name);
+                                  setSymbol(crypto.id);
+                                }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = '#f8f9fa'}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                              >
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <div>
+                                    <strong>#{crypto.market_cap_rank}</strong> {crypto.name}
+                                  </div>
+                                  <div className="text-muted">
+                                    {crypto.symbol.toUpperCase()}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          {cryptoList.filter(crypto => 
+                            crypto.name.toLowerCase().includes(cryptoSearch.toLowerCase()) ||
+                            crypto.symbol.toLowerCase().includes(cryptoSearch.toLowerCase())
+                          ).length === 0 && (
+                            <div className="px-3 py-2 text-muted">
+                              No cryptocurrencies found
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="col">
                     <div className="form-check form-check-inline">
@@ -386,24 +524,51 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
             {assetType === 'preciousMetal' &&
               <>
                 <div className="row g-3 align-items-end mb-3">
-                  <div className="col">
-                    <select className="form-control" value={metalType} onChange={(e) => setMetalType(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
-                      <option value="XAU">Gold</option>
-                      <option value="XAG">Silver</option>
-                      <option value="XPT">Platinum</option>
-                      <option value="XPD">Palladium</option>
-                    </select>
+                  <div className="col-md-6">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Metal Type</label>
+                    <div className="position-relative">
+                      <select 
+                        className="form-control" 
+                        value={metalType} 
+                        onChange={(e) => setMetalType(e.target.value)} 
+                        style={{ 
+                          borderRadius: 8, 
+                          border: 'none', 
+                          backgroundColor: '#f8f9fa',
+                          padding: '10px 12px',
+                          cursor: 'pointer',
+                          appearance: 'none',
+                          paddingRight: '30px'
+                        }}
+                      >
+                        <option value="XAU">Gold</option>
+                        <option value="XAG">Silver</option>
+                        <option value="XPT">Platinum</option>
+                        <option value="XPD">Palladium</option>
+                      </select>
+                      <div style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        pointerEvents: 'none',
+                        color: '#666'
+                      }}>
+                        ▼
+                      </div>
+                    </div>
                   </div>
-                  <div className="col">
+                  <div className="col-md-6">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Quantity</label>
                     <input
                       type="number"
                       className="form-control"
-                      placeholder="Quantity (grams)"
+                      placeholder="Enter amount in grams"
                       value={quantity}
                       onChange={(e) => setQuantity(e.target.value)}
                       min="0.01"
                       step="0.01"
-                      style={{ borderRadius: 8, border: 'none' }}
+                      style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                     />
                   </div>
                 </div>
@@ -412,38 +577,36 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
             {assetType === 'bankAccount' &&
               <>
                 <div className="row g-3 align-items-end mb-3">
-                  <div className="col">
+                  <div className="col-md-4">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Account Name</label>
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Account Name"
+                      placeholder="Account name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
+                      style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                     />
                   </div>
-                  <div className="col">
+                  <div className="col-md-4">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Balance (CHF)</label>
                     <input
                       type="number"
                       className="form-control"
-                      placeholder="Balance"
+                      placeholder="0.00"
                       value={value}
                       onChange={(e) => setValue(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
+                      style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa' }}
                     />
                   </div>
-                  <div className="col">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Currency"
-                      value={currency}
-                      onChange={(e) => setCurrency(e.target.value)}
-                      style={{ borderRadius: 8, border: 'none' }}
-                    />
-                  </div>
-                  <div className="col">
-                    <select className="form-control" value={accountType} onChange={(e) => setAccountType(e.target.value)} style={{ borderRadius: 8, border: 'none' }}>
+                  <div className="col-md-4">
+                    <label className="form-label" style={{ fontSize: '13px', marginBottom: '4px', color: '#666' }}>Account Type</label>
+                    <select 
+                      className="form-control" 
+                      value={accountType} 
+                      onChange={(e) => setAccountType(e.target.value)} 
+                      style={{ borderRadius: 8, border: 'none', backgroundColor: '#f8f9fa', cursor: 'pointer' }}
+                    >
                       <option value="Checking">Checking</option>
                       <option value="Savings">Savings</option>
                     </select>
