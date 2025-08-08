@@ -7,11 +7,19 @@ import './Card.css';
 function Dashboard({ networth, assets, transactions, onEditAsset, onDeleteAsset }) {
   return (
     <div>
-      <div className="stats-container">
-        <Networth networth={networth} />
-        <TransactionSummary transactions={transactions} />
+      <div className="row">
+        <div className="col-md-6">
+          <Networth networth={networth} />
+        </div>
+        <div className="col-md-6">
+          <TransactionSummary transactions={transactions} />
+        </div>
       </div>
-      <Assets assets={assets} onEditAsset={onEditAsset} onDeleteAsset={onDeleteAsset} />
+      <div className="row mt-4">
+        <div className="col-md-12">
+          <Assets assets={assets} onEditAsset={onEditAsset} onDeleteAsset={onDeleteAsset} />
+        </div>
+      </div>
     </div>
   );
 }

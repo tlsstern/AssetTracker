@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './Card.css';
 import { formatCHF } from '../utils/formatters';
-import { Icons } from './Icons';
 
 const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDeleteTransaction, assets }) => {
   const [name, setName] = useState('');
@@ -76,7 +75,21 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
     setEditIndex(null);
   };
 
-  // Button styles are now handled by CSS classes
+  const buttonStyle = {
+    borderRadius: 8,
+    fontWeight: 600,
+    background: '#687FE5',
+    color: '#F3E2D4',
+    border: 'none',
+  };
+
+  const outlineButtonStyle = {
+    borderRadius: 8,
+    fontWeight: 600,
+    background: 'transparent',
+    color: '#687FE5',
+    border: '1px solid #687FE5',
+  };
 
   const currentCategories = transactionType === 'expense' ? expenseCategories : incomeCategories;
 
@@ -188,7 +201,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                 </div>
               )}
               <div className="col-md text-end">
-                <button type="submit" className="btn btn-primary">Add</button>
+                <button type="submit" className="btn" style={buttonStyle}>Add</button>
               </div>
             </div>
           </form>
@@ -207,8 +220,8 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                   {editIndex === index ? (
                     <>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
-                        <span style={{ marginRight: 8, color: editData.transactionType === 'expense' ? '#ef4444' : '#10b981' }}>
-                          {editData.transactionType === 'expense' ? Icons.expense : Icons.income}
+                        <span role="img" aria-label="transaction" style={{ fontSize: 20, marginRight: 8 }}>
+                          {editData.transactionType === 'expense' ? '💸' : '💰'}
                         </span>
                         <select 
                           name="transactionType" 
@@ -241,15 +254,15 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                         </div>
                       </span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <button className="btn btn-sm btn-primary" onClick={() => saveEdit(index)}>Save</button>
-                        <button className="btn btn-sm btn-outline" onClick={() => setEditIndex(null)}>Cancel</button>
+                        <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>Save</button>
+                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>Cancel</button>
                       </span>
                     </>
                   ) : (
                     <>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ marginRight: 8, color: transaction.transaction_type === 'expense' ? '#ef4444' : '#10b981' }}>
-                          {transaction.transaction_type === 'expense' ? Icons.expense : Icons.income}
+                        <span role="img" aria-label="transaction" style={{ fontSize: 20, marginRight: 8 }}>
+                          {transaction.transaction_type === 'expense' ? '💸' : '💰'}
                         </span>
                         <div>
                           <span style={{ fontWeight: 500 }}>{transaction.name}</span>
@@ -265,11 +278,20 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                         </div>
                       </div>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span className={`badge rounded-pill ${transaction.transaction_type === 'expense' ? 'badge-danger' : 'badge-success'}`}>
+                        <span 
+                          className="badge rounded-pill" 
+                          style={{ 
+                            fontSize: 16, 
+                            padding: '8px 16px', 
+                            background: transaction.transaction_type === 'expense' ? '#dc3545' : '#28a745', 
+                            color: '#F3E2D4', 
+                            fontWeight: 600 
+                          }}
+                        >
                           {transaction.transaction_type === 'expense' ? '-' : '+'} {formatCHF(transaction.value)}
                         </span>
-                        <button className="btn btn-sm btn-outline" onClick={() => startEdit(index, transaction)}>Edit</button>
-                        <button className="btn btn-sm btn-outline" onClick={() => onDeleteTransaction(index)}>Delete</button>
+                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, transaction)}>Edit</button>
+                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteTransaction(index)}>Delete</button>
                       </span>
                     </>
                   )}
