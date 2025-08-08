@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import './Card.css';
 import './Settings.css';
 
 const Settings = ({ onUpdatePrices, isUpdatingPrices, lastPriceUpdate }) => {
@@ -54,69 +53,115 @@ const Settings = ({ onUpdatePrices, isUpdatingPrices, lastPriceUpdate }) => {
     await supabase.auth.signOut();
   };
 
+  const formatLastUpdate = (date) => {
+    if (!date) return 'Never';
+    const updateDate = new Date(date);
+    const now = new Date();
+    const diffMinutes = Math.floor((now - updateDate) / (1000 * 60));
+    
+    if (diffMinutes < 1) return 'Just now';
+    if (diffMinutes < 60) return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+    if (diffMinutes < 1440) {
+      const hours = Math.floor(diffMinutes / 60);
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    }
+    return updateDate.toLocaleDateString() + ' at ' + updateDate.toLocaleTimeString();
+  };
+
   return (
     <div className="settings-wrapper">
-      <div className="card">
-        <div className="card-header">Settings</div>
-        <div className="card-body">
-          {message && (
-            <p className={`form-message ${isError ? 'error' : 'success'}`}>
-              {message}
+      <div className="settings-container">
+        <div className="settings-header">
+          <span className="settings-icon">⚙️</span>
+          Settings
+        </div>
+        
+        {message && (
+          <p className={`form-message ${isError ? 'error' : 'success'}`}>
+            {message}
+          </p>
+        )}
+
+        {userEmail && (
+          <div className="user-info">
+            <span className="user-info-label">Logged in as:</span>
+            <span className="user-info-value">{userEmail}</span>
+          </div>
+        )}
+        
+        <div className="settings-section">
+          <h4>
+            <span>💹</span>
+            Price Updates
+          </h4>
+          <p>Keep your asset values up-to-date with real-time market prices.</p>
+          
+          <div className="settings-info">
+            <p className="last-update">
+              <strong>Last Update:</strong> {formatLastUpdate(lastPriceUpdate)}
             </p>
-          )}
-          <div className="settings-section">
-            <h4>Price Updates</h4>
-            <p>Manage automatic price updates for your assets.</p>
-            <div className="settings-info">
-              {lastPriceUpdate ? (
-                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-                  Last price update: {new Date(lastPriceUpdate).toLocaleString()}
-                </p>
-              ) : (
-                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
-                  Prices have not been updated yet
-                </p>
-              )}
-              <p style={{ fontSize: '13px', color: '#999', marginBottom: '16px' }}>
-                Prices automatically update every 12 minutes for stocks, cryptocurrencies, and precious metals.
-              </p>
-            </div>
-            <div className="settings-actions">
-              <button
-                className="btn settings-btn"
-                onClick={onUpdatePrices}
-                disabled={isUpdatingPrices}
-                style={{ 
-                  background: '#687FE5',
-                  color: '#F3E2D4',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  fontWeight: '600',
-                  cursor: isUpdatingPrices ? 'not-allowed' : 'pointer',
-                  opacity: isUpdatingPrices ? 0.6 : 1
-                }}
-              >
-                {isUpdatingPrices ? 'Updating Prices...' : 'Refresh Prices Now'}
-              </button>
-            </div>
+            <p className="update-note">
+              Automatic updates run every 12 minutes for stocks, cryptocurrencies, and precious metals.
+            </p>
           </div>
           
-          <div className="settings-section" style={{ marginTop: '32px' }}>
-            <h4>Account Actions</h4>
-            <p>Manage your account settings and actions.</p>
-            <div className="settings-actions">
-              <button
-                className="btn settings-btn"
-                onClick={handleChangePassword}
-                disabled={loading || countdown > 0}
-              >
-                {loading ? 'Sending...' : countdown > 0 ? `Resend in ${countdown}s` : 'Change Password'}
-              </button>
-              <button className="btn btn-secondary" onClick={handleSignOut}>
-                Sign Out
-              </button>
-            </div>
+          <div className="settings-actions">
+            <button
+              className="settings-btn btn-primary"
+              onClick={onUpdatePrices}
+              disabled={isUpdatingPrices}
+            >
+              {isUpdatingPrices ? (
+                <>
+                  <span>🔄</span> Updating Prices...
+                </>
+              ) : (
+                <>
+                  <span>🔄</span> Refresh Prices Now
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+        
+        <div className="settings-section">
+          <h4>
+            <span>🔐</span>
+            Account Security
+          </h4>
+          <p>Manage your account security and authentication settings.</p>
+          
+          <div className="settings-actions">
+            <button
+              className="settings-btn btn-primary"
+              onClick={handleChangePassword}
+              disabled={loading || countdown > 0}
+            >
+              {loading ? (
+                '📧 Sending...'
+              ) : countdown > 0 ? (
+                `⏰ Resend in ${countdown}s`
+              ) : (
+                '🔑 Change Password'
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h4>
+            <span>👤</span>
+            Account Actions
+          </h4>
+          <p>Sign out of your account or manage other account settings.</p>
+          
+          <div className="settings-actions">
+            <button 
+              className="settings-btn btn-secondary" 
+              onClick={handleSignOut}
+            >
+              🚪 Sign Out
+            </button>
           </div>
         </div>
       </div>
