@@ -1,35 +1,79 @@
 .Navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  background: #fff;
-  padding: 8px 24px;
+  background: white;
+  padding: 0.5rem 1.5rem;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  margin: 0 auto 32px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 0 auto 2rem auto;
   max-width: 900px;
+  animation: slideUp 0.5s ease-out;
 }
 
-.nav-links {
-  display: flex;
-  gap: 24px;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .Navbar a {
-  padding: 8px 20px;
-  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
   text-decoration: none;
-  color: #687FE5;
+  color: #4a5568;
   font-weight: 600;
-  font-size: 1.1rem;
-  transition: background 0.2s, color 0.2s;
-}
-
-.Navbar a:hover, .Navbar a.active {
-  background: #687FE5;
-  color: #F3E2D4;
-}
-
-.nav-settings {
+  font-size: 1rem;
+  transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
+}
+
+.Navbar a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+.Navbar a:hover {
+  color: #667eea;
+  transform: translateY(-2px);
+}
+
+.Navbar a:hover::before {
+  width: 80%;
+}
+
+.Navbar a.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.Navbar a.active::before {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .Navbar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .Navbar a {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
 }

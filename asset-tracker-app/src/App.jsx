@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Route, Routes, Navigate, Link } from 'react-router-dom';
 import './App.css';
+import Homepage from './components/Homepage.jsx';
 import Navbar from './components/Navbar.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Transactions from './components/Transactions.jsx';
@@ -224,14 +225,18 @@ function App() {
 
   return (
     <Routes>
+      <Route path="/" element={<Homepage />} />
+      <Route path="/login" element={!session ? <Login /> : <Navigate to="/dashboard" />} />
+      <Route path="/verify" element={!session ? <Verify /> : <Navigate to="/dashboard" />} />
+      <Route path="/update-password" element={<UpdatePassword />} />
       <Route
-        path="/*"
+        path="/dashboard/*"
         element={
           session ? (
             <div className="App">
               <header className="App-header">
-                <h1 className="App-title">Asset Tracker</h1>
-                <Link to="/settings" className="settings-link">
+                <h1 className="App-title">AssetTracker</h1>
+                <Link to="/dashboard/settings" className="settings-link">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51-1z"></path>
@@ -246,7 +251,7 @@ function App() {
                   <Route path="/overview" element={<DataOverview assets={assets} transactions={transactions} />} />
                   <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} onTransfer={handleTransfer} />} />
                   <Route path="/settings" element={<Settings onUpdatePrices={updatePrices} isUpdatingPrices={isUpdatingPrices} lastPriceUpdate={lastPriceUpdate} />} />
-                  <Route path="*" element={<Navigate to="/" />} />
+                  <Route path="*" element={<Navigate to="/dashboard" />} />
                 </Routes>
               </div>
             </div>
@@ -255,9 +260,7 @@ function App() {
           )
         }
       />
-      <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
-      <Route path="/verify" element={!session ? <Verify /> : <Navigate to="/" />} />
-      <Route path="/update-password" element={<UpdatePassword />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

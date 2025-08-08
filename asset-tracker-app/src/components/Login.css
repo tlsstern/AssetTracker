@@ -1,38 +1,84 @@
-.login-page-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #F3E2D4;
-  padding: 2rem;
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.login-page-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+  overflow-x: hidden;
+}
+
+.login-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  padding: 1rem 0;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-logo {
+  text-decoration: none;
+}
+
+.login-logo h2 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.back-home {
+  color: #4a5568;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.back-home:hover {
+  color: #667eea;
 }
 
 .login-layout {
-  text-align: center;
-  max-width: 400px;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  padding-top: 100px;
+  overflow: visible;
 }
 
 .app-title {
-  font-size: 3rem;
+  color: white;
+  font-size: 2.5rem;
   font-weight: 700;
-  color: #17313E;
-  margin-bottom: 0.5rem;
-}
-
-.app-subtitle {
-  font-size: 1.2rem;
-  color: #415E72;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 
 .flip-container {
   perspective: 1000px;
   width: 100%;
-  min-height: 580px;
+  max-width: 450px;
+  min-height: 600px;
+  padding: 20px 0;
 }
 
 .flip-container.flipped .flipper {
@@ -40,186 +86,217 @@
 }
 
 .flipper {
-  transition: 0.6s;
-  transform-style: preserve-3d;
   position: relative;
-  height: 100%;
-  min-height: 580px;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: inherit;
 }
 
 .front, .back {
-  backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-}
-
-.front {
-  z-index: 2;
-  transform: rotateY(0deg);
+  backface-visibility: hidden;
 }
 
 .back {
+  position: absolute;
+  top: 0;
   transform: rotateY(180deg);
 }
 
 .form-container {
-    width: 100%;
-    height: 100%;
-    border-radius: 0.75rem;
-    background-color: #17313E;
-    padding: 2rem;
-    color: #F3E2D4;
-    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  background: white;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.5s ease-out;
 }
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .title {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.form-message {
+  min-height: 20px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.form-message.error {
+  color: #f56565;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
 .form {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .input-group {
-  margin-bottom: 1.25rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .input-group label {
-  display: block;
-  color: #C5B0CD;
-  margin-bottom: 4px;
-  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
 }
 
 .input-group input {
-  width: 100%;
-  box-sizing: border-box;
-  border-radius: 0.375rem;
-  border: 1px solid #415E72;
-  outline: 0;
-  background-color: #17313E;
-  padding: 0.75rem 1rem;
-  color: #F3E2D4;
-  transition: border-color 0.2s;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f7fafc;
 }
 
 .input-group input:focus {
-  border-color: #687FE5;
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .input-group input.error-input {
-  border-color: #e54848;
-}
-
-.forgot a, .signup a {
-  color: #F3E2D4;
-  text-decoration: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.forgot a:hover, .signup a:hover {
-  text-decoration: underline #C5B0CD;
+  border-color: #f56565;
+  animation: shake 0.3s ease;
 }
 
 .sign {
-  display: block;
-  width: 100%;
-  background-color: #415E72;
-  padding: 0.75rem;
-  text-align: center;
-  color: #F3E2D4;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 0.875rem;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 10px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 0.5rem;
 }
 
-.sign:hover {
-  background-color: #52758a;
+.sign:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.sign:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 .social-message {
   display: flex;
   align-items: center;
-  padding-top: 1rem;
+  gap: 1rem;
   margin: 1.5rem 0;
 }
 
 .line {
+  flex: 1;
   height: 1px;
-  flex: 1 1 0%;
-  background-color: #415E72;
+  background: #e2e8f0;
 }
 
-.social-message .message {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  color: #C5B0CD;
+.message {
+  font-size: 0.85rem;
+  color: #718096;
+  white-space: nowrap;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.social-icons .icon {
-  border-radius: 0.125rem;
-  padding: 0.75rem;
-  border: none;
-  background-color: transparent;
-  margin-left: 8px;
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background: white;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease;
 }
 
-.social-icons .icon:hover {
-  opacity: 0.8;
+.icon:hover {
+  border-color: #667eea;
+  background: #f7fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.social-icons .icon svg {
-  height: 1.25rem;
-  width: 1.25rem;
-  fill: #F3E2D4;
+.icon svg {
+  width: 20px;
+  height: 20px;
+  fill: #4a5568;
 }
 
 .signup {
-  margin-top: 1.5rem;
   text-align: center;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  color: #C5B0CD;
+  font-size: 0.9rem;
+  color: #718096;
 }
 
-.form-message {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #F3E2D4;
-  font-size: 0.875rem;
-  text-align: center;
-  min-height: 20px;
-  transition: opacity 0.3s;
-  opacity: 0.9;
+.signup a {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
-.form-message.error {
-  color: #ff8a8a;
-  font-weight: 500;
-  opacity: 1;
+.signup a:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .login-layout {
+    padding: 1rem;
+    padding-top: 80px;
+  }
+
+  .form-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .app-title {
+    font-size: 2rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
 }

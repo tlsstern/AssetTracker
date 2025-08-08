@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 import { supabase } from '../supabaseClient';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -97,9 +97,16 @@ const Login = () => {
 
   return (
     <div className="login-page-wrapper">
+      <div className="login-nav">
+        <div className="login-nav-container">
+          <Link to="/" className="login-logo">
+            <h2>AssetTracker</h2>
+          </Link>
+          <Link to="/" className="back-home">← Back to Home</Link>
+        </div>
+      </div>
       <div className="login-layout">
-        <h1 className="app-title">Asset Tracker</h1>
-        <p className="app-subtitle">Your personal finance dashboard</p>
+        <h1 className="app-title">Welcome Back</h1>
         
         <div className={`flip-container ${isFlipped ? 'flipped' : ''}`}>
           <div className="flipper">

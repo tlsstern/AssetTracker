@@ -5,10 +5,10 @@ import './Navbar.css';
 function Navbar() {
   return (
     <nav className="Navbar">
-      <Link to="/">Dashboard</Link>
-      <Link to="/transactions">Transactions</Link>
-      <Link to="/overview">Data Overview</Link>
-      <Link to="/add">Manage Assets</Link>
+      <Link to="/dashboard">Dashboard</Link>
+      <Link to="/dashboard/transactions">Transactions</Link>
+      <Link to="/dashboard/overview">Data Overview</Link>
+      <Link to="/dashboard/add">Manage Assets</Link>
     </nav>
   );
 }

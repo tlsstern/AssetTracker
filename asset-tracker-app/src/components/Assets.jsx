@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { formatCHF, formatSwissNumber } from '../utils/formatters';
-import { buttonStyles, icons } from '../constants/styles';
+import { icons } from '../constants/styles';
+import './Assets.css';
 
 const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
   const [editIndex, setEditIndex] = useState(null);
@@ -88,15 +89,13 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
 
 
   return (
-    <div className="card">
-      <div className="card-header">Assets</div>
-      <div className="card-body">
-        {assets.length === 0 ? (
-          <div className="text-muted" style={{ fontStyle: 'italic' }}>No assets added yet.</div>
-        ) : (
-          <ul className="list-group mb-3">
-            {assets.map((asset, index) => (
-              <li key={index} className="list-group-item d-flex justify-content-between align-items-center" style={{ border: 'none', background: 'transparent', padding: '14px 0' }}>
+    <div className="assets-container">
+      {assets.length === 0 ? (
+        <div className="no-assets">No assets added yet.</div>
+      ) : (
+        <ul className="assets-list">
+          {assets.map((asset, index) => (
+            <li key={index} className="asset-item">
                 {editIndex === index ? (
                   <>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
