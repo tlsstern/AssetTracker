@@ -43,47 +43,45 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
 
 
   const renderAssetDetails = (asset) => {
-    const Badge = ({ children }) => (
-      <span className="badge bg-light text-secondary ms-2" style={buttonStyles.badge}>
+    const Badge = ({ children, secondary }) => (
+      <span className={`asset-badge ${secondary ? 'secondary' : ''}`}>
         {children}
       </span>
     );
-
-    const AssetName = () => <span style={{ fontWeight: 500 }}>{asset.name}</span>;
 
     switch (asset.type) {
       case 'stock':
       case 'crypto':
         return (
           <>
-            <AssetName />
-            {asset.quantity && <Badge>(x{asset.quantity})</Badge>}
+            <Badge>{asset.type}</Badge>
+            {asset.quantity && <Badge secondary>x{asset.quantity}</Badge>}
           </>
         );
       case 'bankAccount':
         return (
           <>
-            <AssetName />
-            <Badge>{asset.account_type}</Badge>
-            <Badge>{asset.currency}</Badge>
+            <Badge>Bank</Badge>
+            <Badge secondary>{asset.account_type}</Badge>
+            <Badge secondary>{asset.currency}</Badge>
           </>
         );
       case 'card':
         return (
           <>
-            <AssetName />
-            <Badge>Limit: {formatSwissNumber(asset.card_limit)}</Badge>
+            <Badge>Card</Badge>
+            <Badge secondary>Limit: {formatSwissNumber(asset.card_limit)}</Badge>
           </>
         );
       case 'preciousMetal':
         return (
           <>
-            <AssetName />
-            {asset.quantity && <Badge>({asset.quantity}g)</Badge>}
+            <Badge>Metal</Badge>
+            {asset.quantity && <Badge secondary>{asset.quantity}g</Badge>}
           </>
         );
       default:
-        return <AssetName />;
+        return <Badge>Asset</Badge>;
     }
   };
 
@@ -96,72 +94,78 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
         <ul className="assets-list">
           {assets.map((asset, index) => (
             <li key={index} className="asset-item">
-                {editIndex === index ? (
-                  <>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
-                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>{icons.asset}</span>
-                      <input
-                        type="text"
-                        name="name"
-                        value={editData.name}
-                        onChange={handleEditChange}
-                        className="form-control form-control-sm"
-                        style={{ width: 120, ...buttonStyles.input, marginRight: 8 }}
-                      />
-                      {(asset.type === "stock" || asset.type === "crypto" || asset.type === "preciousMetal") &&
-                        <input
-                          type="number"
-                          name="quantity"
-                          value={editData.quantity}
-                          onChange={handleEditChange}
-                          className="form-control form-control-sm"
-                          style={{ width: 60, ...buttonStyles.input, marginRight: 8 }}
-                          min={1}
-                        />
-                      }
-                    </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {editIndex === index ? (
+                <>
+                  <div className="asset-info">
+                    <span className="asset-icon">{icons.asset}</span>
+                    <input
+                      type="text"
+                      name="name"
+                      value={editData.name}
+                      onChange={handleEditChange}
+                      className="edit-input"
+                      style={{ width: 150, marginRight: 8 }}
+                    />
+                    {(asset.type === "stock" || asset.type === "crypto" || asset.type === "preciousMetal") &&
                       <input
                         type="number"
-                        name="value"
-                        value={editData.value}
+                        name="quantity"
+                        value={editData.quantity}
                         onChange={handleEditChange}
-                        className="form-control form-control-sm"
-                        style={{ width: 90, ...buttonStyles.input, marginRight: 8 }}
-                        min={0}
+                        className="edit-input"
+                        style={{ width: 80 }}
+                        min={1}
                       />
-                      <button className="btn btn-sm" style={buttonStyles.primary} onClick={() => saveEdit(index)}>
-                        Save
-                      </button>
-                      <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => setEditIndex(null)}>
-                        Cancel
-                      </button>
+                    }
+                    <input
+                      type="number"
+                      name="value"
+                      value={editData.value}
+                      onChange={handleEditChange}
+                      className="edit-input"
+                      style={{ width: 120 }}
+                      min={0}
+                    />
+                  </div>
+                  <div className="asset-actions">
+                    <button className="btn-save" onClick={() => saveEdit(index)}>
+                      Save
+                    </button>
+                    <button className="btn-cancel" onClick={() => setEditIndex(null)}>
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="asset-info">
+                    <span className="asset-icon">{icons.asset}</span>
+                    <div className="asset-details">
+                      <span className="asset-name">{asset.name}</span>
+                      <div className="asset-meta">
+                        {renderAssetDetails(asset)}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="asset-value">
+                      {formatCHF(asset.value)}
                     </span>
-                  </>
-                ) : (
-                  <>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>{icons.asset}</span>
-                      {renderAssetDetails(asset)}
-                    </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="badge rounded-pill" style={{ ...buttonStyles.valueBadge, background: '#687FE5', color: '#F3E2D4' }}>
-                        {formatCHF(asset.value)}
-                      </span>
-                      <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => startEdit(index, asset)}>
+                    <div className="asset-actions">
+                      <button className="btn-edit" onClick={() => startEdit(index, asset)}>
                         Edit
                       </button>
-                      <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => onDeleteAsset(index)}>
+                      <button className="btn-delete" onClick={() => onDeleteAsset(index)}>
                         Delete
                       </button>
-                    </span>
-                  </>
+                    </div>
+                  </div>
+                </>
                 )}
               </li>
             ))}
-          </ul>
-        )}
-      </div>
+        </ul>
+      )}
     </div>
   );
 };

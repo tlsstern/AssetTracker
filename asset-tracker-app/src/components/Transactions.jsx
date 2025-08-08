@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './Card.css';
+import './Transactions.css';
 import { formatCHF } from '../utils/formatters';
-import { buttonStyles, colors, icons } from '../constants/styles';
+import { icons } from '../constants/styles';
 
 const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDeleteTransaction, assets }) => {
   const [name, setName] = useState('');
@@ -76,216 +76,209 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
     setEditIndex(null);
   };
 
-
   const currentCategories = transactionType === 'expense' ? expenseCategories : incomeCategories;
 
   return (
-    <div>
-      <div className="card">
-        <div className="card-header">Add Transaction</div>
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3 mb-3">
-              <div className="col-md-2">
-                <select 
-                  className="form-control" 
-                  value={transactionType} 
-                  onChange={(e) => {
-                    setTransactionType(e.target.value);
-                    setCategory(''); // Reset category when switching type
-                  }} 
-                  style={buttonStyles.input}
-                >
-                  <option value="expense">Expense</option>
-                  <option value="income">Income</option>
-                </select>
-              </div>
-              <div className="col-md-4">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder={transactionType === 'expense' ? 'What did you spend on?' : 'Where did money come from?'}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  style={buttonStyles.input}
-                />
-              </div>
-              <div className="col-md-2">
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Amount"
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  style={buttonStyles.input}
-                />
-              </div>
-              <div className="col-md-2">
-                <input
-                  type="date"
-                  className="form-control"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  style={buttonStyles.input}
-                />
-              </div>
-              <div className="col-md-2">
-                <select 
-                  className="form-control" 
-                  value={category} 
-                  onChange={(e) => setCategory(e.target.value)} 
-                  style={buttonStyles.input}
-                >
-                  <option value="">Category</option>
-                  {currentCategories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
+    <div className="transactions-container">
+      <div className="add-transaction-form">
+        <div className="form-header">Add Transaction</div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-row">
+            <select 
+              className="form-select" 
+              value={transactionType} 
+              onChange={(e) => {
+                setTransactionType(e.target.value);
+                setCategory('');
+              }}
+            >
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+            <input 
+              type="text" 
+              className="form-input" 
+              placeholder={transactionType === 'expense' ? 'What did you spend on?' : 'Where did money come from?'}
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+              required 
+            />
+            <input 
+              type="number" 
+              className="form-input" 
+              placeholder="Amount" 
+              value={value} 
+              onChange={(e) => setValue(e.target.value)} 
+              required 
+              min={0} 
+              step={0.01} 
+            />
+            <select 
+              className="form-select" 
+              value={category} 
+              onChange={(e) => setCategory(e.target.value)} 
+              required
+            >
+              <option value="">Category</option>
+              {currentCategories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+            <input 
+              type="date" 
+              className="form-input" 
+              value={date} 
+              onChange={(e) => setDate(e.target.value)} 
+              required 
+            />
+            <select 
+              className="form-select" 
+              value={account} 
+              onChange={(e) => setAccount(e.target.value)}
+            >
+              <option value="">Select Account</option>
+              {assets.filter(asset => asset.type === 'bankAccount').map(account => (
+                <option key={account.id} value={account.id}>{account.name}</option>
+              ))}
+            </select>
+            <div className="form-checkbox-wrapper">
+              <input
+                className="form-checkbox"
+                type="checkbox"
+                id="recurringCheck"
+                checked={isRecurring}
+                onChange={(e) => setIsRecurring(e.target.checked)}
+              />
+              <label className="form-checkbox-label" htmlFor="recurringCheck">
+                Recurring
+              </label>
             </div>
-            <div className="row g-3 mb-3 align-items-center">
-              <div className="col-md-3">
-                <select 
-                  className="form-control" 
-                  value={account} 
-                  onChange={(e) => setAccount(e.target.value)} 
-                  style={buttonStyles.input}
-                >
-                  <option value="">Select Account</option>
-                  {assets.filter(asset => asset.type === 'bankAccount').map(account => (
-                    <option key={account.id} value={account.id}>{account.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-md-2">
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="recurringCheck"
-                    checked={isRecurring}
-                    onChange={(e) => setIsRecurring(e.target.checked)}
-                  />
-                  <label className="form-check-label" htmlFor="recurringCheck">
-                    Recurring
-                  </label>
-                </div>
-              </div>
-              {isRecurring && (
-                <div className="col-md-2">
-                  <select 
-                    className="form-control" 
-                    value={recurringFrequency} 
-                    onChange={(e) => setRecurringFrequency(e.target.value)}
-                    style={buttonStyles.input}
-                  >
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="yearly">Yearly</option>
-                  </select>
-                </div>
-              )}
-              <div className="col-md text-end">
-                <button type="submit" className="btn" style={buttonStyles.primary}>Add</button>
-              </div>
-            </div>
-          </form>
-        </div>
+            {isRecurring && (
+              <select 
+                className="form-select" 
+                value={recurringFrequency} 
+                onChange={(e) => setRecurringFrequency(e.target.value)}
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+              </select>
+            )}
+            <button type="submit" className="btn-add-transaction">Add Transaction</button>
+          </div>
+        </form>
       </div>
 
-      <div className="card mt-4 transactions-list-card">
-        <div className="card-header">Transactions List</div>
-        <div className="card-body">
-          {transactions.length === 0 ? (
-            <div className="text-muted" style={{ fontStyle: 'italic' }}>No transactions yet. Start tracking your income and expenses!</div>
-          ) : (
-            <ul className="list-group mb-3">
-              {transactions.map((transaction, index) => (
-                <li key={index} className="list-group-item d-flex justify-content-between align-items-center" style={{ border: 'none', background: 'transparent', padding: '14px 0' }}>
-                  {editIndex === index ? (
-                    <>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
-                        <span role="img" aria-label="transaction" style={{ fontSize: 20, marginRight: 8 }}>
-                          {editData.transactionType === 'expense' ? icons.expense : icons.income}
-                        </span>
-                        <select 
-                          name="transactionType" 
-                          value={editData.transactionType} 
-                          onChange={handleEditChange} 
-                          className="form-control form-control-sm"
-                        >
-                          <option value="expense">Expense</option>
-                          <option value="income">Income</option>
-                        </select>
-                        <input type="text" name="name" value={editData.name} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Name" />
-                        <input type="number" name="value" value={editData.value} onChange={handleEditChange} className="form-control form-control-sm" placeholder="Value" style={{ width: '100px' }} />
-                        <input type="date" name="date" value={editData.date} onChange={handleEditChange} className="form-control form-control-sm" />
-                        <select name="category" value={editData.category} onChange={handleEditChange} className="form-control form-control-sm">
-                          {(editData.transactionType === 'expense' ? expenseCategories : incomeCategories).map(cat => (
-                            <option key={cat} value={cat}>{cat}</option>
-                          ))}
-                        </select>
-                        <div className="form-check form-check-sm">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name="isRecurring"
-                            checked={editData.isRecurring}
-                            onChange={handleEditChange}
-                          />
-                          <label className="form-check-label">
-                            Recurring
-                          </label>
-                        </div>
+      <div className="transactions-list-container">
+        <div className="form-header">Transactions List</div>
+        {transactions.length === 0 ? (
+          <div className="no-transactions">No transactions yet. Start tracking your income and expenses!</div>
+        ) : (
+          <ul className="transactions-list">
+            {transactions.map((transaction, index) => (
+              <li key={index} className="transaction-item">
+                {editIndex === index ? (
+                  <div className="edit-mode">
+                    <div className="edit-inputs">
+                      <span className="transaction-icon">
+                        {editData.transactionType === 'expense' ? icons.expense : icons.income}
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <button className="btn btn-sm" style={buttonStyles.primary} onClick={() => saveEdit(index)}>Save</button>
-                        <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => setEditIndex(null)}>Cancel</button>
+                      <select 
+                        name="transactionType" 
+                        value={editData.transactionType} 
+                        onChange={handleEditChange} 
+                        className="edit-select"
+                      >
+                        <option value="expense">Expense</option>
+                        <option value="income">Income</option>
+                      </select>
+                      <input 
+                        type="text" 
+                        name="name" 
+                        value={editData.name} 
+                        onChange={handleEditChange} 
+                        className="edit-input" 
+                        placeholder="Name" 
+                      />
+                      <input 
+                        type="number" 
+                        name="value" 
+                        value={editData.value} 
+                        onChange={handleEditChange} 
+                        className="edit-input" 
+                        placeholder="Value" 
+                        style={{ width: '100px' }} 
+                      />
+                      <input 
+                        type="date" 
+                        name="date" 
+                        value={editData.date} 
+                        onChange={handleEditChange} 
+                        className="edit-input" 
+                      />
+                      <select 
+                        name="category" 
+                        value={editData.category} 
+                        onChange={handleEditChange} 
+                        className="edit-select"
+                      >
+                        {(editData.transactionType === 'expense' ? expenseCategories : incomeCategories).map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                      <div className="form-checkbox-wrapper">
+                        <input
+                          className="form-checkbox"
+                          type="checkbox"
+                          name="isRecurring"
+                          checked={editData.isRecurring}
+                          onChange={handleEditChange}
+                        />
+                        <label className="form-checkbox-label">
+                          Recurring
+                        </label>
+                      </div>
+                    </div>
+                    <div className="transaction-actions">
+                      <button className="btn-save-transaction" onClick={() => saveEdit(index)}>Save</button>
+                      <button className="btn-cancel-transaction" onClick={() => setEditIndex(null)}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="transaction-info">
+                      <span className="transaction-icon">
+                        {transaction.transaction_type === 'expense' ? icons.expense : icons.income}
                       </span>
-                    </>
-                  ) : (
-                    <>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span role="img" aria-label="transaction" style={{ fontSize: 20, marginRight: 8 }}>
-                          {transaction.transaction_type === 'expense' ? icons.expense : icons.income}
-                        </span>
-                        <div>
-                          <span style={{ fontWeight: 500 }}>{transaction.name}</span>
-                          <div>
-                            <span className="badge bg-light text-secondary me-2" style={buttonStyles.badge}>{transaction.category}</span>
-                            <span className="badge bg-light text-secondary me-2" style={buttonStyles.badge}>{transaction.date}</span>
-                            {transaction.is_recurring && (
-                              <span className="badge bg-light text-secondary" style={buttonStyles.badge}>
-                                {transaction.recurring_frequency}
-                              </span>
-                            )}
-                          </div>
+                      <div className="transaction-details">
+                        <span className="transaction-name">{transaction.name}</span>
+                        <div className="transaction-meta">
+                          <span className="transaction-badge">{transaction.category}</span>
+                          <span className="transaction-badge">{transaction.date}</span>
+                          {transaction.is_recurring && (
+                            <span className="transaction-badge recurring">
+                              {transaction.recurring_frequency}
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span 
-                          className="badge rounded-pill" 
-                          style={{ 
-                            fontSize: 16, 
-                            padding: '8px 16px', 
-                            background: transaction.transaction_type === 'expense' ? colors.expense : colors.income, 
-                            color: '#F3E2D4', 
-                            fontWeight: 600 
-                          }}
-                        >
-                          {transaction.transaction_type === 'expense' ? '-' : '+'} {formatCHF(transaction.value)}
-                        </span>
-                        <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => startEdit(index, transaction)}>Edit</button>
-                        <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => onDeleteTransaction(index)}>Delete</button>
+                    </div>
+                    <div className="transaction-value-section">
+                      <span className={`transaction-value ${transaction.transaction_type}`}>
+                        {transaction.transaction_type === 'expense' ? '-' : '+'} {formatCHF(transaction.value)}
                       </span>
-                    </>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                      <div className="transaction-actions">
+                        <button className="btn-edit-transaction" onClick={() => startEdit(index, transaction)}>Edit</button>
+                        <button className="btn-delete-transaction" onClick={() => onDeleteTransaction(index)}>Delete</button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
