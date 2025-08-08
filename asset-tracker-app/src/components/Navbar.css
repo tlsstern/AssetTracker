@@ -5,10 +5,12 @@
   background: white;
   padding: 0.5rem 1.5rem;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   margin: 0 auto 2rem auto;
   max-width: 900px;
   animation: slideUp 0.5s ease-out;
+  position: relative;
+  z-index: 10;
 }
 
 @keyframes slideUp {

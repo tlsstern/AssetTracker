@@ -145,19 +145,31 @@
   background: #cbd5e0;
 }
 
-.edit-input {
+.edit-input, .edit-select {
   padding: 0.5rem;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 0.875rem;
   transition: all 0.3s ease;
   background: white;
+  font-family: inherit;
 }
 
-.edit-input:focus {
+.edit-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1em;
+  padding-right: 2rem;
+  cursor: pointer;
+}
+
+.edit-input:focus, .edit-select:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background-color: #fafbff;
 }
 
 .no-assets {

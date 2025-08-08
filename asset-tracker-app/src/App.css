@@ -12,13 +12,14 @@
 
 .App-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 2rem 2rem 3rem 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   animation: slideDown 0.5s ease-out;
+  margin-bottom: -1.5rem;
+  z-index: 1;
 }
 
 @keyframes slideDown {
