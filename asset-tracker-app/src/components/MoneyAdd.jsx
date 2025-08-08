@@ -130,23 +130,27 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
 
     if (assetType === 'stock') {
       if (inputMode === 'quantity') {
-        if (!name || !quantity || !fetchedPrice) return;
+        if (!name || !quantity || !fetchedPrice || !symbol) return;
         assetValue = parseFloat(quantity) * fetchedPrice;
-        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity) };
+        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), symbol };
       } else {
         if (!name || !value) return;
         assetToAdd = { ...assetToAdd, value: assetValue };
+        // If we have a symbol even in value mode, include it
+        if (symbol) {
+          assetToAdd.symbol = symbol;
+        }
       }
     } else if (assetType === 'crypto') {
       if (inputMode === 'quantity') {
         if (!selectedCrypto || !quantity || !fetchedPrice) return;
         assetValue = parseFloat(quantity) * fetchedPrice;
-        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity) };
+        assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), symbol: selectedCrypto };
       } else {
         if (!selectedCrypto || !value) return;
         const crypto = cryptoList.find(c => c.id === selectedCrypto);
         if (crypto) {
-          assetToAdd = { ...assetToAdd, name: crypto.name, value: assetValue };
+          assetToAdd = { ...assetToAdd, name: crypto.name, value: assetValue, symbol: selectedCrypto };
         }
       }
     } else if (assetType === 'preciousMetal') {
@@ -155,8 +159,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
         assetToAdd = { ...assetToAdd, value: assetValue, quantity: parseFloat(quantity), metal_type: metalType };
     } else if (assetType === 'bankAccount') {
       assetToAdd = { ...assetToAdd, currency: 'CHF', account_type: accountType };
-    } else if (assetType === 'salary') {
-      assetToAdd = { ...assetToAdd, income: parseFloat(value), destination_account: destinationAccount };
     }
 
 
@@ -218,7 +220,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
                   <option value="crypto">Cryptocurrency</option>
                   <option value="bankAccount">Bank Account</option>
                   <option value="preciousMetal">Precious Metal</option>
-                  <option value="salary">Salary</option>
                 </select>
               </div>
             </div>

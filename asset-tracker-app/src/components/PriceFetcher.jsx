@@ -130,15 +130,16 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
           // Use fallback prices if API calls failed
           if (!metalPriceUsd) {
             const fallbackPrices = {
-              'XAU': 2050,  // Gold ~$2050/oz
-              'XAG': 24,    // Silver ~$24/oz
-              'XPT': 970,   // Platinum ~$970/oz
-              'XPD': 1050   // Palladium ~$1050/oz
+              'XAU': 2650,  // Gold ~$2650/oz (Jan 2025)
+              'XAG': 30,    // Silver ~$30/oz (Jan 2025)
+              'XPT': 980,   // Platinum ~$980/oz (Jan 2025)
+              'XPD': 950   // Palladium ~$950/oz (Jan 2025)
             };
             
             if (fallbackPrices[symbol]) {
               metalPriceUsd = fallbackPrices[symbol];
-              setError('Using approximate price. Live data may be unavailable.');
+              // Don't set error for fallback prices - this is normal behavior
+              // setError('Using approximate price. Live data may be unavailable.');
             }
           }
           

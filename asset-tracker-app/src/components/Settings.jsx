@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import './Card.css';
 import './Settings.css';
 
-const Settings = () => {
+const Settings = ({ onUpdatePrices, isUpdatingPrices, lastPriceUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -65,6 +65,44 @@ const Settings = () => {
             </p>
           )}
           <div className="settings-section">
+            <h4>Price Updates</h4>
+            <p>Manage automatic price updates for your assets.</p>
+            <div className="settings-info">
+              {lastPriceUpdate ? (
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+                  Last price update: {new Date(lastPriceUpdate).toLocaleString()}
+                </p>
+              ) : (
+                <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>
+                  Prices have not been updated yet
+                </p>
+              )}
+              <p style={{ fontSize: '13px', color: '#999', marginBottom: '16px' }}>
+                Prices automatically update every 12 minutes for stocks, cryptocurrencies, and precious metals.
+              </p>
+            </div>
+            <div className="settings-actions">
+              <button
+                className="btn settings-btn"
+                onClick={onUpdatePrices}
+                disabled={isUpdatingPrices}
+                style={{ 
+                  background: '#687FE5',
+                  color: '#F3E2D4',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                  fontWeight: '600',
+                  cursor: isUpdatingPrices ? 'not-allowed' : 'pointer',
+                  opacity: isUpdatingPrices ? 0.6 : 1
+                }}
+              >
+                {isUpdatingPrices ? 'Updating Prices...' : 'Refresh Prices Now'}
+              </button>
+            </div>
+          </div>
+          
+          <div className="settings-section" style={{ marginTop: '32px' }}>
             <h4>Account Actions</h4>
             <p>Manage your account settings and actions.</p>
             <div className="settings-actions">

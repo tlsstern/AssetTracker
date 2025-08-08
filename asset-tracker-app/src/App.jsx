@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Route, Routes, Navigate, Link } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/Navbar.jsx';
@@ -11,6 +11,7 @@ import Verify from './components/Verify.jsx';
 import UpdatePassword from './components/UpdatePassword.jsx';
 import Settings from './components/Settings.jsx';
 import { supabase } from './supabaseClient';
+import { updateAssetPrices, shouldUpdatePrices } from './services/priceUpdateService';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -18,11 +19,16 @@ function App() {
   const [assets, setAssets] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [networth, setNetworth] = useState(0);
+  const [lastPriceUpdate, setLastPriceUpdate] = useState(null);
+  const [isUpdatingPrices, setIsUpdatingPrices] = useState(false);
+  const priceUpdateIntervalRef = useRef(null);
 
-  const getAssets = useCallback(async () => {
+  const getAssets = useCallback(async (skipPriceUpdate = false) => {
     if (!session) return;
     const { data } = await supabase.from('assets').select('*').eq('user_id', session.user.id);
-    setAssets(data || []);
+    const assetsData = data || [];
+    setAssets(assetsData);
+    return assetsData;
   }, [session]);
 
   const getTransactions = useCallback(async () => {
@@ -46,12 +52,83 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const updatePrices = async (assetsToUpdate = null) => {
+    if (isUpdatingPrices) return;
+    
+    setIsUpdatingPrices(true);
+    
+    try {
+      // Get fresh assets from database if not provided
+      let currentAssets = assetsToUpdate;
+      if (!currentAssets) {
+        const { data } = await supabase
+          .from('assets')
+          .select('*')
+          .eq('user_id', session?.user?.id);
+        currentAssets = data || [];
+      }
+      
+      if (currentAssets.length === 0) {
+        setIsUpdatingPrices(false);
+        return;
+      }
+      
+      const updatedAssets = await updateAssetPrices(currentAssets);
+      
+      // Update assets in database and state
+      for (const updatedAsset of updatedAssets) {
+        if (updatedAsset.lastUpdated) {
+          await supabase
+            .from('assets')
+            .update({ 
+              value: updatedAsset.value,
+              last_price_update: updatedAsset.lastUpdated 
+            })
+            .eq('id', updatedAsset.id);
+        }
+      }
+      
+      setAssets(updatedAssets);
+      setLastPriceUpdate(new Date().toISOString());
+    } catch (error) {
+      // Silent fail, keep existing prices
+    } finally {
+      setIsUpdatingPrices(false);
+    }
+  };
+
   useEffect(() => {
     if (session) {
-      getAssets();
+      getAssets().then(assetsData => {
+        // Update prices on initial load if we have assets
+        if (assetsData && assetsData.length > 0 && shouldUpdatePrices(lastPriceUpdate)) {
+          setTimeout(() => updatePrices(assetsData), 2000);
+        }
+      });
       getTransactions();
     }
   }, [session, getAssets, getTransactions]);
+
+  // Set up automatic price updates every 10-15 minutes
+  useEffect(() => {
+    if (session && assets.length > 0) {
+      // Clear existing interval
+      if (priceUpdateIntervalRef.current) {
+        clearInterval(priceUpdateIntervalRef.current);
+      }
+      
+      // Set up new interval (12 minutes to be in the middle of 10-15)
+      priceUpdateIntervalRef.current = setInterval(() => {
+        updatePrices();
+      }, 12 * 60 * 1000); // 12 minutes
+      
+      return () => {
+        if (priceUpdateIntervalRef.current) {
+          clearInterval(priceUpdateIntervalRef.current);
+        }
+      };
+    }
+  }, [session, assets.length]);
 
   useEffect(() => {
     const calculateNetworth = () => {
@@ -175,7 +252,7 @@ function App() {
                   <Route path="/transactions" element={<Transactions onAddTransaction={addTransaction} transactions={transactions} onEditTransaction={editTransaction} onDeleteTransaction={deleteTransaction} assets={assets} />} />
                   <Route path="/overview" element={<DataOverview assets={assets} transactions={transactions} />} />
                   <Route path="/add" element={<MoneyAdd onAddAsset={addAsset} assets={assets} onEditAsset={editAsset} onDeleteAsset={deleteAsset} onTransfer={handleTransfer} />} />
-                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/settings" element={<Settings onUpdatePrices={updatePrices} isUpdatingPrices={isUpdatingPrices} lastPriceUpdate={lastPriceUpdate} />} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </div>

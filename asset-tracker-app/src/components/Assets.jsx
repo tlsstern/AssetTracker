@@ -15,7 +15,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       type: asset.type,
       currency: asset.currency,
       accountType: asset.account_type,
-      limit: asset.limit,
+      limit: asset.card_limit,
       income: asset.income,
       metalType: asset.metal_type,
     });
@@ -33,7 +33,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
       type: editData.type,
       currency: editData.currency,
       account_type: editData.accountType,
-      limit: editData.limit,
+      card_limit: editData.limit,
       income: editData.income,
       metal_type: editData.metalType,
     });
@@ -71,7 +71,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
         return (
           <>
             <AssetName />
-            <Badge>Limit: {formatSwissNumber(asset.limit)}</Badge>
+            <Badge>Limit: {formatSwissNumber(asset.card_limit)}</Badge>
           </>
         );
       case 'preciousMetal':
