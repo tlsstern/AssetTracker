@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Card.css';
 import { formatCHF } from '../utils/formatters';
+import { buttonStyles, colors, icons } from '../constants/styles';
 
 const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDeleteTransaction, assets }) => {
   const [name, setName] = useState('');
@@ -75,21 +76,6 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
     setEditIndex(null);
   };
 
-  const buttonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: '#687FE5',
-    color: '#F3E2D4',
-    border: 'none',
-  };
-
-  const outlineButtonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: 'transparent',
-    color: '#687FE5',
-    border: '1px solid #687FE5',
-  };
 
   const currentCategories = transactionType === 'expense' ? expenseCategories : incomeCategories;
 
@@ -108,7 +94,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                     setTransactionType(e.target.value);
                     setCategory(''); // Reset category when switching type
                   }} 
-                  style={{ borderRadius: 8, border: 'none' }}
+                  style={buttonStyles.input}
                 >
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
@@ -121,7 +107,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                   placeholder={transactionType === 'expense' ? 'What did you spend on?' : 'Where did money come from?'}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  style={{ borderRadius: 8, border: 'none' }}
+                  style={buttonStyles.input}
                 />
               </div>
               <div className="col-md-2">
@@ -131,7 +117,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                   placeholder="Amount"
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
-                  style={{ borderRadius: 8, border: 'none' }}
+                  style={buttonStyles.input}
                 />
               </div>
               <div className="col-md-2">
@@ -140,7 +126,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                   className="form-control"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  style={{ borderRadius: 8, border: 'none' }}
+                  style={buttonStyles.input}
                 />
               </div>
               <div className="col-md-2">
@@ -148,7 +134,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                   className="form-control" 
                   value={category} 
                   onChange={(e) => setCategory(e.target.value)} 
-                  style={{ borderRadius: 8, border: 'none' }}
+                  style={buttonStyles.input}
                 >
                   <option value="">Category</option>
                   {currentCategories.map(cat => (
@@ -163,7 +149,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                   className="form-control" 
                   value={account} 
                   onChange={(e) => setAccount(e.target.value)} 
-                  style={{ borderRadius: 8, border: 'none' }}
+                  style={buttonStyles.input}
                 >
                   <option value="">Select Account</option>
                   {assets.filter(asset => asset.type === 'bankAccount').map(account => (
@@ -191,7 +177,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                     className="form-control" 
                     value={recurringFrequency} 
                     onChange={(e) => setRecurringFrequency(e.target.value)}
-                    style={{ borderRadius: 8, border: 'none' }}
+                    style={buttonStyles.input}
                   >
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly</option>
@@ -201,7 +187,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                 </div>
               )}
               <div className="col-md text-end">
-                <button type="submit" className="btn" style={buttonStyle}>Add</button>
+                <button type="submit" className="btn" style={buttonStyles.primary}>Add</button>
               </div>
             </div>
           </form>
@@ -221,7 +207,7 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                     <>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
                         <span role="img" aria-label="transaction" style={{ fontSize: 20, marginRight: 8 }}>
-                          {editData.transactionType === 'expense' ? '💸' : '💰'}
+                          {editData.transactionType === 'expense' ? icons.expense : icons.income}
                         </span>
                         <select 
                           name="transactionType" 
@@ -254,23 +240,23 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                         </div>
                       </span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>Save</button>
-                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>Cancel</button>
+                        <button className="btn btn-sm" style={buttonStyles.primary} onClick={() => saveEdit(index)}>Save</button>
+                        <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => setEditIndex(null)}>Cancel</button>
                       </span>
                     </>
                   ) : (
                     <>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <span role="img" aria-label="transaction" style={{ fontSize: 20, marginRight: 8 }}>
-                          {transaction.transaction_type === 'expense' ? '💸' : '💰'}
+                          {transaction.transaction_type === 'expense' ? icons.expense : icons.income}
                         </span>
                         <div>
                           <span style={{ fontWeight: 500 }}>{transaction.name}</span>
                           <div>
-                            <span className="badge bg-light text-secondary me-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{transaction.category}</span>
-                            <span className="badge bg-light text-secondary me-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{transaction.date}</span>
+                            <span className="badge bg-light text-secondary me-2" style={buttonStyles.badge}>{transaction.category}</span>
+                            <span className="badge bg-light text-secondary me-2" style={buttonStyles.badge}>{transaction.date}</span>
                             {transaction.is_recurring && (
-                              <span className="badge bg-light text-secondary" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>
+                              <span className="badge bg-light text-secondary" style={buttonStyles.badge}>
                                 {transaction.recurring_frequency}
                               </span>
                             )}
@@ -283,15 +269,15 @@ const Transactions = ({ onAddTransaction, transactions, onEditTransaction, onDel
                           style={{ 
                             fontSize: 16, 
                             padding: '8px 16px', 
-                            background: transaction.transaction_type === 'expense' ? '#dc3545' : '#28a745', 
+                            background: transaction.transaction_type === 'expense' ? colors.expense : colors.income, 
                             color: '#F3E2D4', 
                             fontWeight: 600 
                           }}
                         >
                           {transaction.transaction_type === 'expense' ? '-' : '+'} {formatCHF(transaction.value)}
                         </span>
-                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, transaction)}>Edit</button>
-                        <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteTransaction(index)}>Delete</button>
+                        <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => startEdit(index, transaction)}>Edit</button>
+                        <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => onDeleteTransaction(index)}>Delete</button>
                       </span>
                     </>
                   )}

@@ -1,7 +1,7 @@
 import React from 'react';
-import Networth from './Networth';
-import Assets from './Assets';
-import TransactionSummary from './TransactionSummary';
+import Networth from './Networth.jsx';
+import Assets from './Assets.jsx';
+import TransactionSummary from './TransactionSummary.jsx';
 import './Card.css';
 
 function Dashboard({ networth, assets, transactions, onEditAsset, onDeleteAsset }) {

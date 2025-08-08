@@ -1,16 +1,15 @@
-// App.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { Route, Routes, Navigate, Link } from 'react-router-dom';
 import './App.css';
-import Navbar from './components/Navbar';
-import Dashboard from './components/Dashboard';
-import Transactions from './components/Transactions';
-import DataOverview from './components/DataOverview';
-import MoneyAdd from './components/MoneyAdd';
-import Login from './components/Login';
-import Verify from './components/Verify';
-import UpdatePassword from './components/UpdatePassword';
-import Settings from './components/Settings';
+import Navbar from './components/Navbar.jsx';
+import Dashboard from './components/Dashboard.jsx';
+import Transactions from './components/Transactions.jsx';
+import DataOverview from './components/DataOverview.jsx';
+import MoneyAdd from './components/MoneyAdd.jsx';
+import Login from './components/Login.jsx';
+import Verify from './components/Verify.jsx';
+import UpdatePassword from './components/UpdatePassword.jsx';
+import Settings from './components/Settings.jsx';
 import { supabase } from './supabaseClient';
 
 function App() {
@@ -68,9 +67,7 @@ function App() {
       .from('assets')
       .insert([{ ...asset, user_id: session.user.id }])
       .select();
-    if (error) {
-      console.error('Error adding asset:', error);
-    } else {
+    if (!error) {
       if (asset.type === 'salary' && asset.destination_account) {
         const account = assets.find(a => a.id === asset.destination_account);
         if (account) {
@@ -87,9 +84,7 @@ function App() {
       .from('transactions')
       .insert([{ ...transaction, user_id: session.user.id }])
       .select();
-    if (error) {
-      console.error('Error adding transaction:', error);
-    } else {
+    if (!error) {
       if (transaction.account_id) {
         const account = assets.find(a => a.id === transaction.account_id);
         if (account) {
@@ -108,9 +103,7 @@ function App() {
       .from('assets')
       .update(updatedAsset)
       .eq('id', assetToUpdate.id);
-    if (error) {
-      console.error('Error updating asset:', error);
-    } else {
+    if (!error) {
       getAssets();
     }
   };
@@ -118,9 +111,7 @@ function App() {
   const deleteAsset = async (index) => {
     const assetToDelete = assets[index];
     const { error } = await supabase.from('assets').delete().eq('id', assetToDelete.id);
-    if (error) {
-      console.error('Error deleting asset:', error);
-    } else {
+    if (!error) {
       getAssets();
     }
   };
@@ -131,9 +122,7 @@ function App() {
       .from('transactions')
       .update(updatedTransaction)
       .eq('id', transactionToUpdate.id);
-    if (error) {
-      console.error('Error updating transaction:', error);
-    } else {
+    if (!error) {
       getTransactions();
     }
   };
@@ -141,9 +130,7 @@ function App() {
   const deleteTransaction = async (index) => {
     const transactionToDelete = transactions[index];
     const { error } = await supabase.from('transactions').delete().eq('id', transactionToDelete.id);
-    if (error) {
-      console.error('Error deleting transaction:', error);
-    } else {
+    if (!error) {
       getTransactions();
     }
   };

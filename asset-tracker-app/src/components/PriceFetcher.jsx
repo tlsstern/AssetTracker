@@ -39,11 +39,9 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
                 const exchangeData = await exchangeResponse.json();
                 if (exchangeData.rates && exchangeData.rates.CHF) {
                   usdToChf = exchangeData.rates.CHF;
-                  console.log('USD to CHF rate:', usdToChf);
                 }
               }
             } catch (exchangeErr) {
-              console.warn('Could not fetch exchange rate, using default:', exchangeErr);
             }
 
             // Fetch crypto price from CoinGecko
@@ -59,12 +57,10 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
             if (data[symbol] && data[symbol].usd) {
               // Convert USD price to CHF
               fetchedPrice = data[symbol].usd * usdToChf;
-              console.log(`${symbol} price: $${data[symbol].usd} = CHF ${formatSwissNumber(fetchedPrice)}`);
             } else {
               setError('Cryptocurrency not found. Please select from the available list.');
             }
           } catch (err) {
-            console.error('Error fetching crypto price:', err);
             setError('Could not fetch cryptocurrency price.');
           }
         } else if (type === 'preciousMetal') {
@@ -94,7 +90,6 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
             
             if (response.ok) {
               const data = await response.json();
-              console.log('gold-api.com response:', data);
               
               // Handle various possible response formats
               if (data.price) {
@@ -106,7 +101,6 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
               }
             }
           } catch (err) {
-            console.warn('gold-api.com failed:', err);
           }
           
           // If gold-api.com failed, try alternative API
@@ -130,7 +124,6 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
                 throw new Error('Could not fetch commodity prices');
               }
             } catch (err) {
-              console.warn('Alternative metal API failed:', err);
             }
           }
           
@@ -145,7 +138,6 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
             
             if (fallbackPrices[symbol]) {
               metalPriceUsd = fallbackPrices[symbol];
-              console.log(`Using fallback price for ${symbol}: $${metalPriceUsd}/oz`);
               setError('Using approximate price. Live data may be unavailable.');
             }
           }
@@ -153,7 +145,6 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
           if (metalPriceUsd) {
             // Convert from USD per troy ounce to CHF per gram
             fetchedPrice = (metalPriceUsd / 31.1035) * usdToChf;
-            console.log(`${symbol} price: $${metalPriceUsd}/oz = CHF ${formatSwissNumber(fetchedPrice)}/gram`);
           } else {
             setError('Could not fetch precious metal price.');
           }
@@ -161,7 +152,6 @@ const PriceFetcher = ({ symbol, type, onPriceFetched, quantity = 1 }) => {
         setPrice(fetchedPrice);
         onPriceFetched(fetchedPrice);
       } catch (err) {
-        console.error('Error fetching data:', err);
         setError('Error fetching data.');
         onPriceFetched(null);
       } finally {

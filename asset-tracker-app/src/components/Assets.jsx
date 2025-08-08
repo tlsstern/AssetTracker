@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { formatCHF, formatSwissNumber } from '../utils/formatters';
+import { buttonStyles, icons } from '../constants/styles';
 
 const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
   const [editIndex, setEditIndex] = useState(null);
@@ -39,65 +40,58 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
     setEditIndex(null);
   };
 
-  const buttonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: '#687FE5',
-    color: '#F3E2D4',
-    border: 'none',
-  };
-
-  const outlineButtonStyle = {
-    borderRadius: 8,
-    fontWeight: 600,
-    background: 'transparent',
-    color: '#687FE5',
-    border: '1px solid #687FE5',
-  };
 
   const renderAssetDetails = (asset) => {
+    const Badge = ({ children }) => (
+      <span className="badge bg-light text-secondary ms-2" style={buttonStyles.badge}>
+        {children}
+      </span>
+    );
+
+    const AssetName = () => <span style={{ fontWeight: 500 }}>{asset.name}</span>;
+
     switch (asset.type) {
       case 'stock':
       case 'crypto':
         return (
           <>
-            <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>(x{asset.quantity})</span>}
+            <AssetName />
+            {asset.quantity && <Badge>(x{asset.quantity})</Badge>}
           </>
-        )
+        );
       case 'bankAccount':
         return (
           <>
-            <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.account_type}</span>
-            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>{asset.currency}</span>
+            <AssetName />
+            <Badge>{asset.account_type}</Badge>
+            <Badge>{asset.currency}</Badge>
           </>
-        )
+        );
       case 'card':
         return (
           <>
-            <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Limit: {formatSwissNumber(asset.limit)}</span>
+            <AssetName />
+            <Badge>Limit: {formatSwissNumber(asset.limit)}</Badge>
           </>
-        )
+        );
       case 'preciousMetal':
         return (
           <>
-            <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            {asset.quantity && <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>({asset.quantity}g)</span>}
+            <AssetName />
+            {asset.quantity && <Badge>({asset.quantity}g)</Badge>}
           </>
-        )
+        );
       case 'salary':
         return (
           <>
-            <span style={{ fontWeight: 500 }}>{asset.name}</span>
-            <span className="badge bg-light text-secondary ms-2" style={{ fontWeight: 400, fontSize: 13, border: 'none' }}>Monthly</span>
+            <AssetName />
+            <Badge>Monthly</Badge>
           </>
-        )
+        );
       default:
-        return <span style={{ fontWeight: 500 }}>{asset.name}</span>
+        return <AssetName />;
     }
-  }
+  };
 
 
   return (
@@ -113,14 +107,14 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                 {editIndex === index ? (
                   <>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexGrow: 1 }}>
-                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
+                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>{icons.asset}</span>
                       <input
                         type="text"
                         name="name"
                         value={editData.name}
                         onChange={handleEditChange}
                         className="form-control form-control-sm"
-                        style={{ width: 120, borderRadius: 8, border: 'none', marginRight: 8 }}
+                        style={{ width: 120, ...buttonStyles.input, marginRight: 8 }}
                       />
                       {(asset.type === "stock" || asset.type === "crypto" || asset.type === "preciousMetal") &&
                         <input
@@ -129,7 +123,7 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                           value={editData.quantity}
                           onChange={handleEditChange}
                           className="form-control form-control-sm"
-                          style={{ width: 60, borderRadius: 8, border: 'none', marginRight: 8 }}
+                          style={{ width: 60, ...buttonStyles.input, marginRight: 8 }}
                           min={1}
                         />
                       }
@@ -141,13 +135,13 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                         value={editData.value}
                         onChange={handleEditChange}
                         className="form-control form-control-sm"
-                        style={{ width: 90, borderRadius: 8, border: 'none', marginRight: 8 }}
+                        style={{ width: 90, ...buttonStyles.input, marginRight: 8 }}
                         min={0}
                       />
-                      <button className="btn btn-sm" style={buttonStyle} onClick={() => saveEdit(index)}>
+                      <button className="btn btn-sm" style={buttonStyles.primary} onClick={() => saveEdit(index)}>
                         Save
                       </button>
-                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => setEditIndex(null)}>
+                      <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => setEditIndex(null)}>
                         Cancel
                       </button>
                     </span>
@@ -155,17 +149,17 @@ const Assets = ({ assets, onEditAsset, onDeleteAsset }) => {
                 ) : (
                   <>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>💰</span>
+                      <span role="img" aria-label="asset" style={{ fontSize: 20, marginRight: 8 }}>{icons.asset}</span>
                       {renderAssetDetails(asset)}
                     </span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="badge rounded-pill" style={{ fontSize: 16, padding: '8px 16px', background: '#687FE5', color: '#F3E2D4', fontWeight: 600 }}>
+                      <span className="badge rounded-pill" style={{ ...buttonStyles.valueBadge, background: '#687FE5', color: '#F3E2D4' }}>
                         {formatCHF(asset.value)}
                       </span>
-                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => startEdit(index, asset)}>
+                      <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => startEdit(index, asset)}>
                         Edit
                       </button>
-                      <button className="btn btn-sm" style={outlineButtonStyle} onClick={() => onDeleteAsset(index)}>
+                      <button className="btn btn-sm" style={buttonStyles.outline} onClick={() => onDeleteAsset(index)}>
                         Delete
                       </button>
                     </span>

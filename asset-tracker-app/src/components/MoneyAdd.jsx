@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Card.css';
-import PriceFetcher from './PriceFetcher';
-import Assets from './Assets';
+import PriceFetcher from './PriceFetcher.jsx';
+import Assets from './Assets.jsx';
+import { buttonStyles } from '../constants/styles';
 
 const FINNHUB_API_KEY = 'd1qbte9r01qrh89pd82gd1qbte9r01qrh89pd830';
 const COINGECKO_API_KEY = 'CG-R4jRckRE4upFAG2hCZ1GBnzB';
@@ -44,7 +45,6 @@ const MoneyAdd = ({ onAddAsset, assets, onEditAsset, onDeleteAsset, onTransfer }
             setCryptoList(data);
           }
         } catch (error) {
-          console.error('Error fetching crypto list:', error);
         } finally {
           setLoadingCryptos(false);
         }
